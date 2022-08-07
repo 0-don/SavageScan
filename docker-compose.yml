@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  savagescan-db:
+    container_name: coding-global-db
+    image: postgres:14.4-alpine
+    restart: always
+    expose:
+      - "${SPRING_DATASOURCE_PORT}"
+    networks:
+      - proxy
+    environment:
+      - POSTGRES_DB=${SPRING_DATASOURCE_DATABASE}
+      - POSTGRES_USER=${SPRING_DATASOURCE_USER}
+      - POSTGRES_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.tcp.routers.tcp.tls=true'
+      - 'traefik.tcp.routers.savagescan-db.rule=HostSNI(`*`)'
+      - 'traefik.tcp.services.savagescan-db.loadbalancer.server.port=${SPRING_DATASOURCE_PORT}'
+      - 'traefik.tcp.routers.savagescan-db.entrypoints=savagescan-db'
+      - 'traefik.tcp.routers.savagescan-db.service=savagescan-db'
+      -
+volumes:
+  postgres:
+    driver: local
+
+networks:
+  proxy:
+    external: false
+    name: proxy
