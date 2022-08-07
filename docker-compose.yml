@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   savagescan-db:
-    container_name: coding-global-db
+    container_name: savagescan-db
     image: postgres:14.4-alpine
     restart: always
     expose:
