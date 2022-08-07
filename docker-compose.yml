@@ -20,7 +20,7 @@ services:
       - 'traefik.tcp.services.savagescan-db.loadbalancer.server.port=${SPRING_DATASOURCE_PORT}'
       - 'traefik.tcp.routers.savagescan-db.entrypoints=savagescan-db'
       - 'traefik.tcp.routers.savagescan-db.service=savagescan-db'
-      -
+
 volumes:
   postgres:
     driver: local
