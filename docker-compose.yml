@@ -13,6 +13,7 @@ services:
       - POSTGRES_DB=${SPRING_DATASOURCE_DATABASE}
       - POSTGRES_USER=${SPRING_DATASOURCE_USER}
       - POSTGRES_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+    command: -p ${SPRING_DATASOURCE_PORT}
     labels:
       - 'traefik.enable=true'
       - 'traefik.tcp.routers.tcp.tls=true'
