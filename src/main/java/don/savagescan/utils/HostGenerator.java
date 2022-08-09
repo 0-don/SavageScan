@@ -1,31 +1,38 @@
 package don.savagescan.utils;
 
+import com.github.jgonian.ipmath.Ipv4;
+import com.github.jgonian.ipmath.Ipv4Range;
 import don.savagescan.entity.Server;
 import don.savagescan.repositories.ServerRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class HostGenerator {
-    public HashMap<String, String> reservedIPs = new HashMap<>() {{
-        put("0.0.0.0", "0.255.255.255");
-        put("10.0.0.0", "10.255.255.255");
-        put("100.64.0.0", "100.127.255.255");
-        put("127.0.0.0", "127.255.255.255");
-        put("169.254.0.0", "169.254.255.255");
-        put("172.16.0.0", "172.31.255.255");
-        put("192.0.0.0", "192.0.0.255");
-        put("192.0.2.0", "192.0.2.255");
-        put("192.88.99.0", "192.88.99.255");
-        put("192.168.0.0", "192.168.255.255");
-        put("198.18.0.0", "198.19.255.255");
-        put("198.51.100.0", "198.51.100.255");
-        put("203.0.113.0", "203.0.113.255");
-        put("224.0.0.0", "239.255.255.255");
-        put("233.252.0.0", "233.252.0.255");
-        put("240.0.0.0", "255.255.255.255");
+
+    public List<Ipv4Range> reservedIpRanges = new ArrayList<>() {{
+        add(Ipv4Range.from("0.0.0.0").to("10.255.255.255"));
+        add(new Ipv4Range(Ipv4.of("10.0.0.0"), Ipv4.of("10.255.255.255"));
+        add(new Ipv4Range(Ipv4.of("100.64.0.0"), Ipv4.of("100.127.255.255"));
+        add(new Ipv4Range(Ipv4.of("127.0.0.0"), Ipv4.of("127.255.255.255"));
+        add(new Ipv4Range(Ipv4.of("169.254.0.0"), Ipv4.of("169.254.255.255"));
+        add(new Ipv4Range(Ipv4.of("172.16.0.0"), Ipv4.of("172.31.255.255"));
+        add(new Ipv4Range(Ipv4.of("192.0.0.0"), Ipv4.of("192.0.0.255"));
+        add(new Ipv4Range(Ipv4.of("192.0.2.0"), Ipv4.of("192.0.2.255"));
+        add(new Ipv4Range(Ipv4.of("192.88.99.0"), Ipv4.of("192.88.99.255"));
+        add(new Ipv4Range(Ipv4.of("192.168.0.0"), Ipv4.of("192.168.255.255"));
+        add(new Ipv4Range(Ipv4.of("198.18.0.0"), Ipv4.of("198.19.255.255"));
+        add(new Ipv4Range(Ipv4.of("198.51.100.0"), Ipv4.of("198.51.100.255"));
+        add(new Ipv4Range(Ipv4.of("203.0.113.0"), Ipv4.of("203.0.113.255"));
+        add(new Ipv4Range(Ipv4.of("224.0.0.0"), Ipv4.of("239.255.255.255"));
+        add(new Ipv4Range(Ipv4.of("233.252.0.0"), Ipv4.of("233.252.0.255"));
+        add(new Ipv4Range(Ipv4.of("240.0.0.0"), Ipv4.of("255.255.255.255"));
     }};
+
 
     private final ServerRepository serverRepository;
 
@@ -34,52 +41,21 @@ public class HostGenerator {
     }
 
     public void start() {
-        Server latestServer = serverRepository.findFirstOrderByIdDesc();
+        Server latestServer = serverRepository.findFirstByOrderByIdDesc();
 
         long i = 0L;
         if(latestServer != null) {
-            i = ipToLong(latestServer.getHost());
+            i = latestServer.getId();
         }
 
-        System.out.println(longToIp(i));
+        System.out.println(Ipv4.of(i));
 
-//        while (4294967295L > i) {
-//
-//        }
+        while (Ipv4.LAST_IPV4_ADDRESS.asBigInteger().longValue() > i) {
+
+            serverRepository.save(new Server(i));
+            i++;
+        }
 
     }
 
-    public long ipToLong(String ipAddress) {
-
-        String[] ipAddressInArray = ipAddress.split("\\.");
-
-        long result = 0;
-        for (int i = 0; i < ipAddressInArray.length; i++) {
-
-            int power = 3 - i;
-            int ip = Integer.parseInt(ipAddressInArray[i]);
-            result += ip * Math.pow(256, power);
-
-        }
-
-        return result;
-    }
-
-    public String longToIp(long ip) {
-
-        Long ipLong = Long.valueOf(ip);
-        StringBuilder result = new StringBuilder(15);
-
-        for (int i = 0; i < 4; i++) {
-            result.insert(0, ipLong & 0xff);
-
-            if (i < 3) {
-                result.insert(0, '.');
-            }
-
-            ipLong = ipLong >> 8;
-        }
-
-        return result.toString();
-    }
 }
