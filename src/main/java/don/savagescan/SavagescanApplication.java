@@ -1,19 +1,23 @@
 package don.savagescan;
 
+import don.savagescan.utils.HostGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 
 @SpringBootApplication
-public class SavagescanApplication {
+public class SavagescanApplication implements CommandLineRunner {
+
+	@Autowired
+	private HostGenerator hostGenerator;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SavagescanApplication.class, args);
 	}
 
-	@EventListener(ApplicationReadyEvent.class)
-	public void doSomethingAfterStartup() {
-		System.out.println("hello world, I have just started up");
+	@Override
+	public void run(String... args) throws Exception {
+		hostGenerator.start();
 	}
 }

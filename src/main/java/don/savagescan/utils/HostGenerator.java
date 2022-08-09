@@ -1,64 +1,52 @@
 package don.savagescan.utils;
 
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
+import don.savagescan.entity.Server;
+import don.savagescan.repositories.ServerRepository;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
 import java.util.HashMap;
 
 @Component
 public class HostGenerator {
-    @Autowired
-    private EntityManager em;
-
     public HashMap<String, String> reservedIPs = new HashMap<>() {{
-        put("0.0.0.0","0.255.255.255");
-        put("10.0.0.0","10.255.255.255");
-        put("100.64.0.0","100.127.255.255");
-        put("127.0.0.0","127.255.255.255");
-        put("169.254.0.0","169.254.255.255");
-        put("172.16.0.0","172.31.255.255");
-        put("192.0.0.0","192.0.0.255");
-        put("192.0.2.0","192.0.2.255");
-        put("192.88.99.0","192.88.99.255");
-        put("192.168.0.0","192.168.255.255");
-        put("198.18.0.0","198.19.255.255");
-        put("198.51.100.0","198.51.100.255");
-        put("203.0.113.0","203.0.113.255");
-        put("224.0.0.0","239.255.255.255");
-        put("233.252.0.0","233.252.0.255");
-        put("240.0.0.0","255.255.255.255");
+        put("0.0.0.0", "0.255.255.255");
+        put("10.0.0.0", "10.255.255.255");
+        put("100.64.0.0", "100.127.255.255");
+        put("127.0.0.0", "127.255.255.255");
+        put("169.254.0.0", "169.254.255.255");
+        put("172.16.0.0", "172.31.255.255");
+        put("192.0.0.0", "192.0.0.255");
+        put("192.0.2.0", "192.0.2.255");
+        put("192.88.99.0", "192.88.99.255");
+        put("192.168.0.0", "192.168.255.255");
+        put("198.18.0.0", "198.19.255.255");
+        put("198.51.100.0", "198.51.100.255");
+        put("203.0.113.0", "203.0.113.255");
+        put("224.0.0.0", "239.255.255.255");
+        put("233.252.0.0", "233.252.0.255");
+        put("240.0.0.0", "255.255.255.255");
     }};
 
-    @Autowired
-    public void main() {
+    private final ServerRepository serverRepository;
 
+    public HostGenerator( ServerRepository serverRepository) {
+        this.serverRepository = serverRepository;
+    }
+
+    public void start() {
+        Server latestServer = serverRepository.findFirstOrderByIdDesc();
 
         long i = 0L;
-//        if(latestServer != null) {
-//            i = ipToLong(latestServer.getHost());
+        if(latestServer != null) {
+            i = ipToLong(latestServer.getHost());
+        }
+
+        System.out.println(longToIp(i));
+
+//        while (4294967295L > i) {
+//
 //        }
 
-
-        while (4294967295L > i) {
-
-        }
-//        System.out.println(ipToLong("93.180.213.106"));
-        System.out.println(longToIp("0"));
-
-//        int i = -10_000_000;
-//        do {
-//            i++;
-//
-//            int b1 = (i >> 24) & 0xff;
-//            int b2 = (i >> 16) & 0xff;
-//            int b3 = (i >>  8) & 0xff;
-//            int b4 = (i      ) & 0xff;
-//
-//            System.out.println(b1 + "." + b2 + "." + b3 + "." + b4);
-//
-//        } while(i != -1);
     }
 
     public long ipToLong(String ipAddress) {
@@ -77,7 +65,7 @@ public class HostGenerator {
         return result;
     }
 
-    public String longToIp(String ip) {
+    public String longToIp(long ip) {
 
         Long ipLong = Long.valueOf(ip);
         StringBuilder result = new StringBuilder(15);
