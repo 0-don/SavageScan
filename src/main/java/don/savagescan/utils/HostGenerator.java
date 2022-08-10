@@ -2,60 +2,58 @@ package don.savagescan.utils;
 
 import com.github.jgonian.ipmath.Ipv4;
 import com.github.jgonian.ipmath.Ipv4Range;
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import don.savagescan.entity.Server;
 import don.savagescan.repositories.ServerRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 @Component
 public class HostGenerator {
 
-    public List<Ipv4Range> reservedIpRanges = new ArrayList<>() {{
-        add(Ipv4Range.from("0.0.0.0").to("10.255.255.255"));
-        add(new Ipv4Range(Ipv4.of("10.0.0.0"), Ipv4.of("10.255.255.255"));
-        add(new Ipv4Range(Ipv4.of("100.64.0.0"), Ipv4.of("100.127.255.255"));
-        add(new Ipv4Range(Ipv4.of("127.0.0.0"), Ipv4.of("127.255.255.255"));
-        add(new Ipv4Range(Ipv4.of("169.254.0.0"), Ipv4.of("169.254.255.255"));
-        add(new Ipv4Range(Ipv4.of("172.16.0.0"), Ipv4.of("172.31.255.255"));
-        add(new Ipv4Range(Ipv4.of("192.0.0.0"), Ipv4.of("192.0.0.255"));
-        add(new Ipv4Range(Ipv4.of("192.0.2.0"), Ipv4.of("192.0.2.255"));
-        add(new Ipv4Range(Ipv4.of("192.88.99.0"), Ipv4.of("192.88.99.255"));
-        add(new Ipv4Range(Ipv4.of("192.168.0.0"), Ipv4.of("192.168.255.255"));
-        add(new Ipv4Range(Ipv4.of("198.18.0.0"), Ipv4.of("198.19.255.255"));
-        add(new Ipv4Range(Ipv4.of("198.51.100.0"), Ipv4.of("198.51.100.255"));
-        add(new Ipv4Range(Ipv4.of("203.0.113.0"), Ipv4.of("203.0.113.255"));
-        add(new Ipv4Range(Ipv4.of("224.0.0.0"), Ipv4.of("239.255.255.255"));
-        add(new Ipv4Range(Ipv4.of("233.252.0.0"), Ipv4.of("233.252.0.255"));
-        add(new Ipv4Range(Ipv4.of("240.0.0.0"), Ipv4.of("255.255.255.255"));
-    }};
-
-
     private final ServerRepository serverRepository;
 
-    public HostGenerator( ServerRepository serverRepository) {
+    @Value("classpath:reservedIps.json")
+    private Resource res;
+
+    public HostGenerator(ServerRepository serverRepository) {
         this.serverRepository = serverRepository;
     }
 
-    public void start() {
+
+    public void start() throws IOException {
         Server latestServer = serverRepository.findFirstByOrderByIdDesc();
 
+        JsonReader reader = new JsonReader(new InputStreamReader(res.getInputStream()));
+        IpRange[] reservedIps = new Gson().fromJson(reader, IpRange[].class);
+        
         long i = 0L;
-        if(latestServer != null) {
-            i = latestServer.getId();
+        if (latestServer != null) {
+            i = latestServer.getId() + 1L;
         }
 
-        System.out.println(Ipv4.of(i));
-
         while (Ipv4.LAST_IPV4_ADDRESS.asBigInteger().longValue() > i) {
+            System.out.println(Ipv4.of(i));
+            for (IpRange ipRange : reservedIps) {
+                Ipv4Range range = Ipv4Range.from(ipRange.getStart()).to(ipRange.getEnd());
+                if (range.contains(Ipv4.of(i))) {
+                    i = Ipv4.of(ipRange.getEnd()).asBigInteger().longValue() + 1L;
+                    break;
+                }
+            }
 
-            serverRepository.save(new Server(i));
+            Server server = new Server(i);
+            serverRepository.save(server);
             i++;
         }
 
     }
 
 }
+
+
