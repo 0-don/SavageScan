@@ -1,4 +1,4 @@
-package don.savagescan.utils;
+package don.savagescan.generator;
 
 import lombok.Data;
 
