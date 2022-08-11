@@ -2,15 +2,16 @@ package don.savagescan.generator;
 
 import com.github.jgonian.ipmath.Ipv4;
 import com.github.jgonian.ipmath.Ipv4Range;
+import don.savagescan.entity.Server;
 
 import java.util.List;
 
 public class Producer extends Thread {
-    private final List<Long> queue;
+    private final List<Server> queue;
     private final List<Ipv4Range> ipv4Ranges;
     private Ipv4 start;
 
-    public Producer(List<Long> queue, List<Ipv4Range> ipv4Ranges, Ipv4 start) {
+    public Producer(List<Server> queue, List<Ipv4Range> ipv4Ranges, Ipv4 start) {
         this.queue = queue;
         this.ipv4Ranges = ipv4Ranges;
         this.start = start;
@@ -41,7 +42,7 @@ public class Producer extends Thread {
                 }
                 // send to list
                 start = current;
-                queue.add(start.asBigInteger().longValue());
+                queue.add(new Server(start.asBigInteger().longValue()));
 
                 if (queue.size() == HostGenerator.MAX_SIZE) {
                     queue.notifyAll();

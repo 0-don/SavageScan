@@ -21,7 +21,7 @@ public class HostGenerator {
 
     public static final int MAX_SIZE = 1000;
     private final ServerRepository serverRepository;
-    private final List<Long> buffer = new ArrayList<>();
+    private final List<Server> queue = new ArrayList<>();
 
     @Value("classpath:reservedIps.json")
     private Resource res;
@@ -46,8 +46,8 @@ public class HostGenerator {
                 ? Ipv4.FIRST_IPV4_ADDRESS
                 : Ipv4.of(latest.getId());
 
-        Thread producer = new Producer(buffer, ipv4Ranges, start);
-        Thread consumer = new Consumer(buffer, this.serverRepository);
+        Thread producer = new Producer(queue, ipv4Ranges, start);
+        Thread consumer = new Consumer(queue, this.serverRepository);
 
         producer.start();
         consumer.start();

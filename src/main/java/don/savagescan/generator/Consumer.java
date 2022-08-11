@@ -1,14 +1,15 @@
 package don.savagescan.generator;
 
+import don.savagescan.entity.Server;
 import don.savagescan.repositories.ServerRepository;
 
 import java.util.List;
 
 public class Consumer extends Thread {
-    private final List<Long> queue;
+    private final List<Server> queue;
     private final ServerRepository serverRepository;
 
-    public Consumer(List<Long> queue, ServerRepository serverRepository) {
+    public Consumer(List<Server> queue, ServerRepository serverRepository) {
         this.queue = queue;
         this.serverRepository = serverRepository;
     }
@@ -27,7 +28,8 @@ public class Consumer extends Thread {
                     }
                 }
 
-                serverRepository.save(queue);
+
+                serverRepository.saveAll(queue);
 
                 queue.clear();
                 queue.notifyAll();
