@@ -16,10 +16,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Component
 public class HostGenerator {
+    private static final ExecutorService pool = Executors.newCachedThreadPool();
 
     private final ServerRepository serverRepository;
     private final BlockingQueue<Server> queue = new LinkedBlockingQueue<>();
@@ -33,7 +36,6 @@ public class HostGenerator {
 
 
     public void start() throws IOException {
-
         Server latest = serverRepository.findFirstByOrderByIdDesc();
 
         JsonReader reader = new JsonReader(new InputStreamReader(res.getInputStream()));
@@ -47,49 +49,16 @@ public class HostGenerator {
                 ? Ipv4.FIRST_IPV4_ADDRESS
                 : Ipv4.of(latest.getId());
 
-        Thread producer = new Producer(queue, ipv4Ranges, start);
-        producer.start();
-        Thread consumer = new Consumer(queue, this.serverRepository);
-        consumer.start();
-//        for (int i = 0; i < 1; i++) {
-//
-//        }
+        Producer producer = new Producer(queue, ipv4Ranges, start);
+        pool.execute(producer);
+
+        for (int i = 0; i < 200; i++) {
+            Consumer consumer = new Consumer(queue, this.serverRepository);
+            pool.execute(consumer);
+        }
 
     }
 
-//    public void start() throws IOException {
-//        Server latest = serverRepository.findFirstByOrderByIdDesc();
-//
-//        JsonReader reader = new JsonReader(new InputStreamReader(res.getInputStream()));
-//        IpRange[] reservedIps = new Gson().fromJson(reader, IpRange[].class);
-//
-//        List<Ipv4Range> ipv4Ranges = new ArrayList<>();
-//        Arrays.stream(reservedIps).forEach(range ->
-//                ipv4Ranges.add(Ipv4Range.from(range.getStart()).to(range.getEnd())));
-//
-//
-//        Ipv4 start = latest == null
-//                ? Ipv4.FIRST_IPV4_ADDRESS
-//                : Ipv4.of(latest.getId());
-//
-//        do {
-//            Ipv4 current = start.next();
-//            System.out.println(start);
-//            for (Ipv4Range ipRange : ipv4Ranges) {
-//                if (ipRange.contains(current)) {
-//                    current = ipRange.end();
-//                    break;
-//                }
-//            }
-//            // send to list
-//            start = current;
-//
-//            Server server = new Server(start.asBigInteger().longValue());
-//            serverRepository.save(server);
-//
-//        } while (start.hasNext());
-//
-//    }
 
 }
 
