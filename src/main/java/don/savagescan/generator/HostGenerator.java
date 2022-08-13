@@ -15,13 +15,14 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @Component
 public class HostGenerator {
 
-    public static final int MAX_SIZE = 1000;
     private final ServerRepository serverRepository;
-    private final List<Server> queue = new ArrayList<>();
+    private final BlockingQueue<Server> queue = new LinkedBlockingQueue<>();
 
     @Value("classpath:reservedIps.json")
     private Resource res;
@@ -47,10 +48,13 @@ public class HostGenerator {
                 : Ipv4.of(latest.getId());
 
         Thread producer = new Producer(queue, ipv4Ranges, start);
-        Thread consumer = new Consumer(queue, this.serverRepository);
-
         producer.start();
+        Thread consumer = new Consumer(queue, this.serverRepository);
         consumer.start();
+//        for (int i = 0; i < 1; i++) {
+//
+//        }
+
     }
 
 //    public void start() throws IOException {
