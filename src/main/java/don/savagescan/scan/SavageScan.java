@@ -14,8 +14,7 @@ public class SavageScan {
     @Autowired
     private SSHConfig sshConfig;
 
-    public void start() throws IOException {
-
+    public void start() throws IOException, InterruptedException {
 
         SSHProducer sshProducer = new SSHProducer(sshConfig);
         pool.execute(sshProducer);
@@ -25,5 +24,7 @@ public class SavageScan {
             pool.execute(consumer);
         }
 
+        pool.shutdown();
+        pool.awaitTermination(99, java.util.concurrent.TimeUnit.DAYS);
     }
 }

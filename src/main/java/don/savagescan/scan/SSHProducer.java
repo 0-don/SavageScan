@@ -4,7 +4,7 @@ import com.github.jgonian.ipmath.Ipv4;
 import com.github.jgonian.ipmath.Ipv4Range;
 
 public class SSHProducer implements Runnable {
-    SSHConfig sshConfig;
+    private final SSHConfig sshConfig;
     private Ipv4 start;
 
     public SSHProducer(SSHConfig sshConfig) {
@@ -18,9 +18,9 @@ public class SSHProducer implements Runnable {
 
             Ipv4 current = start.next();
 //                System.out.println(start);
-            for (Ipv4Range ipRange : sshConfig.getIpv4ReservedIps()) {
-                if (ipRange.contains(current)) {
-                    current = ipRange.end().next();
+            for (Ipv4Range reservedIp : sshConfig.getIpv4ReservedIps()) {
+                if (reservedIp.contains(current)) {
+                    current = reservedIp.end().next();
                     break;
                 }
             }

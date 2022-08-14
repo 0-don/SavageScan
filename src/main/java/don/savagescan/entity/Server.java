@@ -6,6 +6,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -31,8 +33,17 @@ public class Server {
     private Date modifyDate;
 
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "server")
+    private Set<ServerService> serverServices = new HashSet<>();
+
     public Server(String host) {
         this.host = host;
+    }
+
+    public Server addServerService(ServerService serverService) {
+        serverService.setServer(this);
+        this.serverServices.add(serverService);
+        return this;
     }
 
 }

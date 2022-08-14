@@ -26,11 +26,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Component
 @Data
 public class SSHConfig {
-    public final BlockingQueue<String> queue = new LinkedBlockingQueue<>();
-    public final List<Ipv4Range> ipv4ReservedIps = new ArrayList<>();
-    public final List<String> sshPasswords = new ArrayList<>();
-    public ServerRepository serverRepository;
-    public Ipv4 start = Ipv4.FIRST_IPV4_ADDRESS;
+    private final BlockingQueue<String> queue = new LinkedBlockingQueue<>();
+    private final List<Ipv4Range> ipv4ReservedIps = new ArrayList<>();
+    private final List<String> sshPasswords = new ArrayList<>();
+    private final ServerRepository serverRepository;
+    private Ipv4 start = Ipv4.FIRST_IPV4_ADDRESS;
+    private Ipv4 current = start;
     @Value("classpath:sshPasswords.txt")
     private Resource sshPasswordsFile;
     @Value("classpath:reservedIps.json")

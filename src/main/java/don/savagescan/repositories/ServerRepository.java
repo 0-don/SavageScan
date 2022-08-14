@@ -7,4 +7,5 @@ public interface ServerRepository extends JpaRepository<Server, Long> {
 
     Server findFirstByOrderByIdDesc();
 
+ 
 }
