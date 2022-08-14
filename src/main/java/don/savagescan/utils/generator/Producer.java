@@ -1,4 +1,4 @@
-package don.savagescan.generator;
+package don.savagescan.utils.generator;
 
 import com.github.jgonian.ipmath.Ipv4;
 import com.github.jgonian.ipmath.Ipv4Range;

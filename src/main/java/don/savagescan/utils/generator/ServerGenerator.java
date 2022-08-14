@@ -1,4 +1,4 @@
-package don.savagescan.generator;
+package don.savagescan.utils.generator;
 
 import com.github.jgonian.ipmath.Ipv4;
 import com.github.jgonian.ipmath.Ipv4Range;
@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Component
-public class HostGenerator {
+public class ServerGenerator {
     private static final ExecutorService pool = Executors.newCachedThreadPool();
 
     private final ServerRepository serverRepository;
@@ -30,7 +30,7 @@ public class HostGenerator {
     @Value("classpath:reservedIps.json")
     private Resource res;
 
-    public HostGenerator(ServerRepository serverRepository) {
+    public ServerGenerator(ServerRepository serverRepository) {
         this.serverRepository = serverRepository;
     }
 

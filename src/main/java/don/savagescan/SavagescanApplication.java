@@ -1,6 +1,7 @@
 package don.savagescan;
 
-import don.savagescan.generator.HostGenerator;
+import don.savagescan.scan.SavageScan;
+import don.savagescan.utils.generator.ServerGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -10,7 +11,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SavagescanApplication implements CommandLineRunner {
 
     @Autowired
-    private HostGenerator hostGenerator;
+    private ServerGenerator hostGenerator;
+
+    @Autowired
+    private SavageScan savageScan;
 
     public static void main(String[] args) {
         SpringApplication.run(SavagescanApplication.class, args);
@@ -18,6 +22,8 @@ public class SavagescanApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        hostGenerator.start();
+//        hostGenerator.start();
+        savageScan.start();
     }
+
 }

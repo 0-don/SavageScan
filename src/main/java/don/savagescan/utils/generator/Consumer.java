@@ -1,4 +1,4 @@
-package don.savagescan.generator;
+package don.savagescan.utils.generator;
 
 import don.savagescan.entity.Server;
 import don.savagescan.repositories.ServerRepository;
