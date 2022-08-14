@@ -25,8 +25,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 @Component
 @Data
-public class SSHConfig {
-    private final BlockingQueue<String> queue = new LinkedBlockingQueue<>();
+public class ScanConfig {
+    private final BlockingQueue<String> queue = new LinkedBlockingQueue<>(1_000_000);
     private final List<Ipv4Range> ipv4ReservedIps = new ArrayList<>();
     private final List<String> sshPasswords = new ArrayList<>();
     private final ServerRepository serverRepository;
@@ -37,7 +37,7 @@ public class SSHConfig {
     @Value("classpath:reservedIps.json")
     private Resource reservedIpsFile;
 
-    public SSHConfig(ServerRepository serverRepository) {
+    public ScanConfig(ServerRepository serverRepository) {
         this.serverRepository = serverRepository;
     }
 

@@ -12,15 +12,15 @@ public class SavageScan {
 
     private static final ExecutorService pool = Executors.newCachedThreadPool();
     @Autowired
-    private SSHConfig sshConfig;
+    private ScanConfig scanConfig;
 
     public void start() throws IOException, InterruptedException {
 
-        SSHProducer sshProducer = new SSHProducer(sshConfig);
+        ScanProducer sshProducer = new ScanProducer(scanConfig);
         pool.execute(sshProducer);
 
-        for (int i = 0; i < 10000; i++) {
-            SSHConsumer consumer = new SSHConsumer(sshConfig);
+        for (int i = 0; i < 1000; i++) {
+            ScanConsumer consumer = new ScanConsumer(scanConfig);
             pool.execute(consumer);
         }
 
