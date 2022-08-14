@@ -36,7 +36,14 @@ public class ServerService {
     public ServerService() {
     }
 
-    public ServerService(ServiceName serviceName, int port, String username, String password, Server server) {
+    public ServerService(ServiceName serviceName, String username, String password, int port) {
+        this.serviceName = serviceName;
+        this.port = port;
+        this.username = username;
+        this.password = password;
+    }
+
+    public ServerService(ServiceName serviceName, String username, String password, int port, Server server) {
         this.serviceName = serviceName;
         this.port = port;
         this.username = username;

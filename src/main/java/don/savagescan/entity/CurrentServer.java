@@ -19,6 +19,9 @@ public class CurrentServer {
 
     private long ipDecimal;
 
+    public CurrentServer() {
+
+    }
 
     public CurrentServer(String host) {
         this.host = host;
@@ -28,4 +31,6 @@ public class CurrentServer {
     public void prePersist() {
         this.ipDecimal = Ipv4.of(this.host).asBigInteger().longValue();
     }
+
+
 }
