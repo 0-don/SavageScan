@@ -3,37 +3,34 @@ package don.savagescan.scan;
 import com.github.jgonian.ipmath.Ipv4;
 import com.github.jgonian.ipmath.Ipv4Range;
 
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
-
 public class SSHProducer implements Runnable {
-    private final BlockingQueue<String> queue;
-    private final List<Ipv4Range> ipv4Ranges;
+    SSHConfig sshConfig;
     private Ipv4 start;
 
-    public SSHProducer(BlockingQueue<String> queue, List<Ipv4Range> ipv4Ranges, Ipv4 start) {
-        this.queue = queue;
-        this.ipv4Ranges = ipv4Ranges;
-        this.start = start;
+    public SSHProducer(SSHConfig sshConfig) {
+        this.sshConfig = sshConfig;
+        this.start = sshConfig.getStart();
     }
-
 
     @Override
     public void run() {
         do {
-            if (queue.size() < 1_000_000) {
-                Ipv4 current = start.next();
-//                System.out.println(start);
-                for (Ipv4Range ipRange : ipv4Ranges) {
-                    if (ipRange.contains(current)) {
-                        current = ipRange.end().next();
-                        break;
-                    }
-                }
-                // send to list
-                start = current;
 
-                queue.add(start.toString());
+            Ipv4 current = start.next();
+//                System.out.println(start);
+            for (Ipv4Range ipRange : sshConfig.getIpv4ReservedIps()) {
+                if (ipRange.contains(current)) {
+                    current = ipRange.end().next();
+                    break;
+                }
+            }
+            // send to list
+            start = current;
+
+            try {
+                sshConfig.getQueue().put(start.toString());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
 
         } while (start.hasNext());

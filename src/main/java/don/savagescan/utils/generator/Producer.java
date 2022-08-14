@@ -35,7 +35,7 @@ public class Producer implements Runnable {
                 // send to list
                 start = current;
 
-                queue.add(new Server(start.asBigInteger().longValue()));
+//                queue.add(new Server(start.asBigInteger().longValue()));
             }
 
 

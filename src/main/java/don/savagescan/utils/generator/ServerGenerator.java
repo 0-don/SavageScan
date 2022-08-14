@@ -26,7 +26,7 @@ public class ServerGenerator {
     private static final ExecutorService pool = Executors.newCachedThreadPool();
 
     private final ServerRepository serverRepository;
-    private final BlockingQueue<Server> queue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<Server> queue = new LinkedBlockingQueue<>(1_000_000);
 
     @Value("classpath:reservedIps.json")
     private Resource res;

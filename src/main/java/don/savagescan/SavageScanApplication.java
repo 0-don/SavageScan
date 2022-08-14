@@ -8,7 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SavagescanApplication implements CommandLineRunner {
+public class SavageScanApplication implements CommandLineRunner {
 
     @Autowired
     private ServerGenerator hostGenerator;
@@ -17,7 +17,7 @@ public class SavagescanApplication implements CommandLineRunner {
     private SavageScan savageScan;
 
     public static void main(String[] args) {
-        SpringApplication.run(SavagescanApplication.class, args);
+        SpringApplication.run(SavageScanApplication.class, args);
     }
 
     @Override
