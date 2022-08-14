@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import don.savagescan.entity.Server;
 import don.savagescan.repositories.ServerRepository;
+import don.savagescan.utils.IpRange;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;

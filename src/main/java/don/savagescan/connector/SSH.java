@@ -16,7 +16,7 @@ public class SSH {
     public String host;
     public String password;
     private List<String> sshPasswords = new ArrayList<>();
-    private Boolean validSession = false;
+    private boolean validSession = false;
     private Session session = null;
 
 
@@ -30,25 +30,24 @@ public class SSH {
         this.validSession = false;
     }
 
-    public Boolean tryConnections() {
-        Boolean sshState = false;
+    public boolean tryConnections() {
+        boolean sshState = false;
+
         for (String password : sshPasswords) {
             this.password = password;
             sshState = connect();
             System.out.println(this + " sshState:" + sshState + " validSession:" + validSession);
-            if (!this.validSession) {
-                break;
-            }
-            if (sshState) {
+            if (!this.validSession || sshState) {
                 break;
             }
         }
         return sshState || this.validSession;
     }
 
-    public Boolean connect() {
+    public boolean connect() {
         try {
             session = new JSch().getSession(username, host, port);
+            session.setTimeout(10000);
             session.setPassword(password);
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
