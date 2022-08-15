@@ -32,7 +32,7 @@ public class SSH {
             this.password = password;
             connect();
 
-//            System.out.println(this + " sshState:" + sshState);
+            System.out.println(this + " sshState:" + sshState);
 
             if (!this.validSession || sshState) {
                 break;
@@ -54,13 +54,14 @@ public class SSH {
             this.validSession = !(msg.contains("Connection refused: connect") || msg.contains("Network is unreachable: connect"));
             // wrong login or password
             sshState = false;
-        }
-        if (session != null) {
-            if (session.isConnected()) {
-                System.out.println("connected");
-                sshState = true;
+        } finally {
+            if (session != null) {
+                if (session.isConnected()) {
+                    System.out.println("connected");
+                    sshState = true;
+                }
+                session.disconnect();
             }
-            session.disconnect();
         }
         sshState = false;
     }
