@@ -19,7 +19,7 @@ public class SavageScan {
         ScanProducer sshProducer = new ScanProducer(scanConfig);
         pool.execute(sshProducer);
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10000; i++) {
             ScanConsumer consumer = new ScanConsumer(scanConfig);
             pool.execute(consumer);
         }
