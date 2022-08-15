@@ -29,8 +29,8 @@ services:
       context: ./
       dockerfile: Dockerfile
     restart: always
-    environment:
-      - spring.datasource.url=jdbc:postgresql://${SPRING_DATASOURCE_HOST}/${SPRING_DATASOURCE_DATABASE}
+    #    environment:
+    #      - spring.datasource.url=jdbc:postgresql://${SPRING_DATASOURCE_HOST}/${SPRING_DATASOURCE_DATABASE}
     networks:
       - proxy
 
