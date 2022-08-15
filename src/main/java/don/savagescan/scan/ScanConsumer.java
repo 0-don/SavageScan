@@ -33,7 +33,6 @@ public class ScanConsumer implements Runnable {
                 }
 
                 if (scanConfig.getCurrent() < Ipv4.of(ip).asBigInteger().longValue()) {
-                    System.out.println("update");
                     scanConfig.setCurrent(Ipv4.of(ip).asBigInteger().longValue());
                     CurrentServer currentServer = scanConfig.getCurrentServerRepository().findFirstByOrderByIdDesc();
                     currentServer.setHost(ip);

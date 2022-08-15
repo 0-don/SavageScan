@@ -22,7 +22,6 @@ public class SavageScanApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-//        hostGenerator.start();
         savageScan.start();
     }
 

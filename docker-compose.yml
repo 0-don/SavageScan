@@ -21,6 +21,19 @@ services:
       - 'traefik.tcp.services.savagescan-db.loadbalancer.server.port=${SPRING_DATASOURCE_PORT}'
       - 'traefik.tcp.routers.savagescan-db.entrypoints=savagescan-db'
       - 'traefik.tcp.routers.savagescan-db.service=savagescan-db'
+  savagescan-service:
+    container_name: savagescan-service
+    depends_on:
+      - savagescan-db
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - spring.datasource.url=jdbc:postgresql://${SPRING_DATASOURCE_HOST}/${SPRING_DATASOURCE_DATABASE}
+    networks:
+      - proxy
+
 
 volumes:
   postgres:
