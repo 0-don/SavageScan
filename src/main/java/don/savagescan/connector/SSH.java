@@ -18,6 +18,8 @@ public class SSH {
     private boolean sshState = false;
     private Session session = null;
 
+    private JSch jsch = new JSch();
+
     public SSH(List<String> sshPasswords) {
         this.sshPasswords = sshPasswords;
     }
@@ -43,7 +45,7 @@ public class SSH {
 
     public void connect() {
         try {
-            session = new JSch().getSession(username, host, port);
+            session = jsch.getSession(username, host, port);
             session.setTimeout(10000);
             session.setPassword(password);
             session.setConfig("StrictHostKeyChecking", "no");
