@@ -26,7 +26,7 @@ public class SavageScan {
     @PostConstruct
     public void init() {
         Settings settings = settingsRepository.findFirstByOrderByIdDesc();
-        threads = settings == null ? settingsRepository.save(new Settings(2500)).getThreads() : settings.getThreads();
+        threads = settings == null ? settingsRepository.save(new Settings(2000)).getThreads() : settings.getThreads();
     }
 
     public void start() throws IOException, InterruptedException {

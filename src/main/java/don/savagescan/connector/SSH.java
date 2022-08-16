@@ -9,10 +9,10 @@ import java.util.List;
 
 @Data
 public class SSH {
-    public final String username = "root";
-    public final int port = 22;
-    public String host;
-    public String password;
+    private final String username = "root";
+    private final int port = 22;
+    private String host;
+    private String password;
     private List<String> sshPasswords;
     private boolean validSession = false;
     private boolean sshState = false;
@@ -63,7 +63,6 @@ public class SSH {
                 session.disconnect();
             }
         }
-        sshState = false;
     }
 
     @Override
