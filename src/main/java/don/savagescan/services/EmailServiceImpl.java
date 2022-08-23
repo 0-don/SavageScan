@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EmailServiceImpl {
-
     private final JavaMailSender emailSender;
 
     @Value("${setTo}")

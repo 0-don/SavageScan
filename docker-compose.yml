@@ -33,15 +33,6 @@ services:
     #      - spring.datasource.url=jdbc:postgresql://${SPRING_DATASOURCE_HOST}/${SPRING_DATASOURCE_DATABASE}
     networks:
       - proxy
-    deploy:
-      resources:
-        limits:
-          cpus: 6
-          memory: 16G
-        reservations:
-          cpus: 5
-          memory: 15G
-
 
 volumes:
   postgres:

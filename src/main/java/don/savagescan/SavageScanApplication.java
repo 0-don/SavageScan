@@ -1,6 +1,7 @@
 package don.savagescan;
 
 import don.savagescan.scan.SavageScan;
+import don.savagescan.services.EmailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,6 +13,9 @@ public class SavageScanApplication implements CommandLineRunner {
     @Autowired
     private SavageScan savageScan;
 
+    @Autowired
+    private EmailServiceImpl emailService;
+
 
     public static void main(String[] args) {
         SpringApplication.run(SavageScanApplication.class, args);
@@ -20,6 +24,7 @@ public class SavageScanApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        emailService.sendMail("testing");
         savageScan.start();
     }
 
