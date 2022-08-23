@@ -24,9 +24,9 @@ public class ScanProducer implements Runnable {
                     break;
                 }
             }
-            // send to list
             start = current;
 
+            // send to list
             try {
                 scanConfig.getQueue().put(start.toString());
             } catch (InterruptedException e) {

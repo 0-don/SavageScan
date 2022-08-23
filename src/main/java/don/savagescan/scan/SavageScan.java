@@ -39,6 +39,7 @@ public class SavageScan {
         }
 
         pool.shutdown();
-        pool.awaitTermination(99, java.util.concurrent.TimeUnit.DAYS);
+        boolean terminated = pool.awaitTermination(99, java.util.concurrent.TimeUnit.DAYS);
+        System.out.println("terminated: " + terminated);
     }
 }

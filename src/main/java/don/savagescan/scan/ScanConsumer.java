@@ -32,7 +32,6 @@ public class ScanConsumer implements Runnable {
                     System.out.println(server.getHost() + " " + serverService);
                     server.addServerService(serverService);
                     scanConfig.getServerRepository().save(server);
-
                 }
 
                 if (scanConfig.getCurrent() < Ipv4.of(ip).asBigInteger().longValue()) {

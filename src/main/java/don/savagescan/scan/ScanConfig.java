@@ -51,7 +51,7 @@ public class ScanConfig {
         JsonReader reader = new JsonReader(new InputStreamReader(reservedIpsFile.getInputStream()));
         IpRange[] reservedIps = new Gson().fromJson(reader, IpRange[].class);
 
-        Arrays.stream(reservedIps).forEach(range -> ipv4ReservedIps.add(Ipv4Range.from(range.getStart()).to(range.getEnd())));
+        Arrays.stream(reservedIps).forEach(range -> ipv4ReservedIps.add(Ipv4Range.from(range.start()).to(range.end())));
 
         CurrentServer currentServer = currentServerRepository.findFirstByOrderByIdDesc();
 
