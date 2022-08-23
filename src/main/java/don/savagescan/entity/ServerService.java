@@ -19,7 +19,7 @@ public class ServerService {
     private int port;
     private String username;
     private String password;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Server server;
 
     @CreationTimestamp
@@ -50,4 +50,6 @@ public class ServerService {
         this.password = password;
         this.server = server;
     }
+
+
 }

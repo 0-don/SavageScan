@@ -28,8 +28,11 @@ public class ScanConsumer implements Runnable {
 
                 if (sshState) {
                     Server server = new Server(ssh.getHost());
-                    server.addServerService(new ServerService(ServiceName.SSH, ssh.getUsername(), ssh.getPassword(), ssh.getPort()));
+                    ServerService serverService = new ServerService(ServiceName.SSH, ssh.getUsername(), ssh.getPassword(), ssh.getPort());
+                    System.out.println(server.getHost() + " " + serverService);
+                    server.addServerService(serverService);
                     scanConfig.getServerRepository().save(server);
+
                 }
 
                 if (scanConfig.getCurrent() < Ipv4.of(ip).asBigInteger().longValue()) {

@@ -2,7 +2,6 @@ package don.savagescan.scan;
 
 import don.savagescan.entity.Settings;
 import don.savagescan.repositories.SettingsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -15,12 +14,12 @@ public class SavageScan {
 
     private static final ExecutorService pool = Executors.newCachedThreadPool();
     private final SettingsRepository settingsRepository;
+    private final ScanConfig scanConfig;
     private int threads = 0;
-    @Autowired
-    private ScanConfig scanConfig;
 
-    public SavageScan(SettingsRepository settingsRepository) {
+    public SavageScan(SettingsRepository settingsRepository, ScanConfig scanConfig) {
         this.settingsRepository = settingsRepository;
+        this.scanConfig = scanConfig;
     }
 
     @PostConstruct

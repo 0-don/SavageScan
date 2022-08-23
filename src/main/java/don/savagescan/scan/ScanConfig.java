@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -47,14 +46,12 @@ public class ScanConfig {
 
     @PostConstruct
     public void init() throws IOException {
-        Charset charset = StandardCharsets.UTF_8;
-        sshPasswords.addAll(Files.readAllLines(sshPasswordsFile.getFile().toPath(), charset));
+        sshPasswords.addAll(Files.readAllLines(sshPasswordsFile.getFile().toPath(), StandardCharsets.UTF_8));
 
         JsonReader reader = new JsonReader(new InputStreamReader(reservedIpsFile.getInputStream()));
         IpRange[] reservedIps = new Gson().fromJson(reader, IpRange[].class);
 
-        Arrays.stream(reservedIps).forEach(range ->
-                ipv4ReservedIps.add(Ipv4Range.from(range.getStart()).to(range.getEnd())));
+        Arrays.stream(reservedIps).forEach(range -> ipv4ReservedIps.add(Ipv4Range.from(range.getStart()).to(range.getEnd())));
 
         CurrentServer currentServer = currentServerRepository.findFirstByOrderByIdDesc();
 
@@ -63,5 +60,6 @@ public class ScanConfig {
         }
 
         start = Ipv4.of(currentServer.getHost());
+
     }
 }

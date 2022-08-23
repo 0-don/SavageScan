@@ -5,9 +5,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Entity
@@ -32,18 +32,20 @@ public class Server {
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifyDate;
 
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "server")
-    private Set<ServerService> serverServices = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "server", orphanRemoval = true)
+    private List<ServerService> serverServices = new ArrayList<>();
 
     public Server(String host) {
         this.host = host;
     }
 
-    public Server addServerService(ServerService serverService) {
-        serverService.setServer(this);
+    public Server() {
+
+    }
+
+    public void addServerService(ServerService serverService) {
         this.serverServices.add(serverService);
-        return this;
+        serverService.setServer(this);
     }
 
 }

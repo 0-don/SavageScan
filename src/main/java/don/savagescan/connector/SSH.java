@@ -17,7 +17,6 @@ public class SSH {
     private boolean validSession = false;
     private boolean sshState = false;
     private Session session = null;
-
     private JSch jsch = new JSch();
 
     public SSH(List<String> sshPasswords) {
