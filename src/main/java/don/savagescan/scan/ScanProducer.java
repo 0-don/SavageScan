@@ -17,7 +17,6 @@ public class ScanProducer implements Runnable {
         do {
 
             Ipv4 current = start.next();
-//                System.out.println(start);
             for (Ipv4Range reservedIp : scanConfig.getIpv4ReservedIps()) {
                 if (reservedIp.contains(current)) {
                     current = reservedIp.end().next();
@@ -26,7 +25,6 @@ public class ScanProducer implements Runnable {
             }
             start = current;
 
-            // send to list
             try {
                 scanConfig.getQueue().put(start.toString());
             } catch (InterruptedException e) {

@@ -33,8 +33,6 @@ public class SSH {
             this.password = password;
             connect();
 
-//            System.out.println(this + " sshState:" + sshState);
-
             if (!this.validSession || sshState) {
                 break;
             }
@@ -57,10 +55,7 @@ public class SSH {
             sshState = false;
         } finally {
             if (session != null) {
-                if (session.isConnected()) {
-                    System.out.println("connected");
-                    sshState = true;
-                }
+                sshState = session.isConnected();
                 session.disconnect();
             }
         }
