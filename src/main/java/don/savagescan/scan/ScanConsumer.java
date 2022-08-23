@@ -29,7 +29,10 @@ public class ScanConsumer implements Runnable {
                 if (sshState) {
                     Server server = new Server(ssh.getHost());
                     ServerService serverService = new ServerService(ServiceName.SSH, ssh.getUsername(), ssh.getPassword(), ssh.getPort());
-                    System.out.println(server.getHost() + " " + serverService);
+
+                    scanConfig.getEmailService().sendMail(server + " " + serverService);
+                    System.out.println(server + " " + serverService);
+
                     server.addServerService(serverService);
                     scanConfig.getServerRepository().save(server);
                 }

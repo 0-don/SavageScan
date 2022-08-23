@@ -12,9 +12,11 @@ public class SavageScanApplication implements CommandLineRunner {
     @Autowired
     private SavageScan savageScan;
 
+
     public static void main(String[] args) {
         SpringApplication.run(SavageScanApplication.class, args);
     }
+
 
     @Override
     public void run(String... args) throws Exception {

@@ -1,4 +1,10 @@
 package don.savagescan.utils;
 
-public record IpRange(String start, String end) {
+import lombok.Data;
+
+@Data
+public class IpRange {
+    private final String start;
+    private final String end;
 }
+
