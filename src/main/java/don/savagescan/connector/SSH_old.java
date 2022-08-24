@@ -1,16 +1,14 @@
 package don.savagescan.connector;
 
 import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import com.sshtools.client.SshClient;
-import com.sshtools.common.ssh.SshException;
 import lombok.Data;
 
-import java.io.IOException;
 import java.util.List;
 
 @Data
-public class SSH {
+public class SSH_old {
     private final String username = "root";
     private final int port = 22;
     private String host;
@@ -21,7 +19,7 @@ public class SSH {
     private Session session = null;
     private JSch jsch = new JSch();
 
-    public SSH(List<String> sshPasswords) {
+    public SSH_old(List<String> sshPasswords) {
         this.sshPasswords = sshPasswords;
     }
 
@@ -34,7 +32,7 @@ public class SSH {
         for (String password : sshPasswords) {
             this.password = password;
             connect();
-            System.out.println(this);
+
             if (!this.validSession || sshState) {
                 break;
             }
@@ -43,10 +41,23 @@ public class SSH {
     }
 
     public void connect() {
-        try (SshClient ssh = new SshClient(host, port, username, password.toCharArray())) {
-            sshState = ssh.isConnected();
-        } catch (IOException | SshException e) {
-            validSession = e.getMessage().contains("Authentication failed");
+        try {
+            session = jsch.getSession(username, host, port);
+            session.setTimeout(10000);
+            session.setPassword(password);
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.connect();
+        } catch (JSchException e) {
+            String msg = e.getMessage();
+            // server doesn't exist or ssh port is changed
+            this.validSession = !(msg.contains("Connection refused: connect") || msg.contains("Network is unreachable: connect"));
+            // wrong login or password
+            sshState = false;
+        } finally {
+            if (session != null) {
+                sshState = session.isConnected();
+                session.disconnect();
+            }
         }
     }
 

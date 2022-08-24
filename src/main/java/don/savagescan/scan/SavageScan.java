@@ -2,25 +2,23 @@ package don.savagescan.scan;
 
 import don.savagescan.entity.Settings;
 import don.savagescan.repositories.SettingsRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Component
+@RequiredArgsConstructor
 public class SavageScan {
 
     private static final ExecutorService pool = Executors.newCachedThreadPool();
+
     private final SettingsRepository settingsRepository;
     private final ScanConfig scanConfig;
-    private int threads = 0;
 
-    public SavageScan(SettingsRepository settingsRepository, ScanConfig scanConfig) {
-        this.settingsRepository = settingsRepository;
-        this.scanConfig = scanConfig;
-    }
+    private int threads = 0;
 
     @PostConstruct
     public void init() {
@@ -28,7 +26,7 @@ public class SavageScan {
         threads = settings == null ? settingsRepository.save(new Settings(2000)).getThreads() : settings.getThreads();
     }
 
-    public void start() throws IOException, InterruptedException {
+    public void start() throws InterruptedException {
 
         ScanProducer sshProducer = new ScanProducer(scanConfig);
         pool.execute(sshProducer);
