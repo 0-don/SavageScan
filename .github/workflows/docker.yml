@@ -29,5 +29,5 @@ jobs:
           echo SET_TO=${{ secrets.SET_TO }} >> .env
           cat .env
 
-#      - name: Docker run
-#        run: docker-compose up -d --force-recreate --build
+      - name: Docker run
+        run: docker-compose up -d --force-recreate --build

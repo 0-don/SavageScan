@@ -63,10 +63,10 @@ public class SSH {
         } finally {
             client.stop();
         }
-        System.out.println(message + " " + this);
-//        if (validSession) {
-//
-//        }
+
+        if (validSession) {
+            System.out.println(this);
+        }
     }
 
     @Override
