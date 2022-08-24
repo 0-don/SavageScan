@@ -42,6 +42,7 @@ public class SSH {
     }
 
     public void connect() {
+        System.out.println(this);
         try (SshClient ssh = new SshClient(host, port, username, 10, password.toCharArray())) {
             sshState = ssh.isConnected();
 
