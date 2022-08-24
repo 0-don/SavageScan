@@ -52,7 +52,7 @@ public class SSH {
         client.start();
 
 
-        try (ClientSession session = client.connect(username, host, port).verify().getSession()) {
+        try (ClientSession session = client.connect(username, host, port).verify(defaultTimeoutSeconds, TimeUnit.SECONDS).getSession()) {
             session.addPasswordIdentity(password);
             session.auth().verify(defaultTimeoutSeconds, TimeUnit.SECONDS);
             this.sshState = session.isAuthenticated();
