@@ -3,10 +3,8 @@ package don.savagescan.connector;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import com.sshtools.client.SshClient;
-import com.sshtools.common.ssh.SshException;
 import lombok.Data;
 
-import java.io.IOException;
 import java.util.List;
 
 @Data
@@ -21,6 +19,7 @@ public class SSH {
     private Session session = null;
     private JSch jsch = new JSch();
 
+
     public SSH(List<String> sshPasswords) {
         this.sshPasswords = sshPasswords;
     }
@@ -34,7 +33,7 @@ public class SSH {
         for (String password : sshPasswords) {
             this.password = password;
             connect();
-            System.out.println(this);
+
             if (!this.validSession || sshState) {
                 break;
             }
@@ -43,9 +42,10 @@ public class SSH {
     }
 
     public void connect() {
-        try (SshClient ssh = new SshClient(host, port, username, password.toCharArray())) {
+        try (SshClient ssh = new SshClient(host, port, username, 10, password.toCharArray())) {
             sshState = ssh.isConnected();
-        } catch (IOException | SshException e) {
+
+        } catch (Throwable e) {
             validSession = e.getMessage().contains("Authentication failed");
         }
     }
