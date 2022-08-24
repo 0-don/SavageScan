@@ -26,7 +26,7 @@ public class SavageScan {
         threads = settings == null ? settingsRepository.save(new Settings(2000)).getThreads() : settings.getThreads();
     }
 
-    public void start() throws InterruptedException {
+    public void start() {
 
         ScanProducer sshProducer = new ScanProducer(scanConfig);
         pool.execute(sshProducer);
@@ -37,7 +37,12 @@ public class SavageScan {
         }
 
         pool.shutdown();
-        boolean terminated = pool.awaitTermination(99, java.util.concurrent.TimeUnit.DAYS);
-        System.out.println("terminated: " + terminated);
+        try {
+            boolean terminated = pool.awaitTermination(99, java.util.concurrent.TimeUnit.DAYS);
+            System.out.println("terminated: " + terminated);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
