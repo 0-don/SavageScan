@@ -56,6 +56,7 @@ public class SSH {
         try {
             ssh.addHostKeyVerifier(new PromiscuousVerifier());
             ssh.setTimeout(10000);
+            ssh.setConnectTimeout(10000);
             ssh.connect(host, port);
             ssh.authPassword(username, password);
             Session session = ssh.startSession();
@@ -70,6 +71,7 @@ public class SSH {
             session.close();
             ssh.disconnect();
         } catch (RuntimeException | IOException e) {
+
             if (e.getMessage() != null) {
                 message = e.getMessage();
                 validSession = e.getMessage().contains("Exhausted available authentication methods");
