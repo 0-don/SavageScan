@@ -2,9 +2,15 @@ package don.savagescan.connector;
 
 import lombok.Data;
 import org.apache.sshd.client.SshClient;
+import org.apache.sshd.client.channel.ClientChannel;
+import org.apache.sshd.client.channel.ClientChannelEvent;
 import org.apache.sshd.client.session.ClientSession;
+import org.apache.sshd.common.channel.Channel;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -51,11 +57,20 @@ public class SSH {
         SshClient client = SshClient.setUpDefaultClient();
         client.start();
 
-
         try (ClientSession session = client.connect(username, host, port).verify(defaultTimeoutSeconds, TimeUnit.SECONDS).getSession()) {
             session.addPasswordIdentity(password);
             session.auth().verify(defaultTimeoutSeconds, TimeUnit.SECONDS);
-            this.sshState = session.isAuthenticated();
+            this.validSession = session.isAuthenticated();
+            try (ByteArrayOutputStream responseStream = new ByteArrayOutputStream();
+                 ClientChannel channel = session.createChannel(Channel.CHANNEL_SHELL)) {
+                channel.setOut(responseStream);
+                try {
+                    String responseString = runCommand(responseStream, channel, defaultTimeoutSeconds);
+                    this.sshState = responseString.toLowerCase().contains("open");
+                } finally {
+                    channel.close(false);
+                }
+            }
             session.close(true);
         } catch (Throwable e) {
             message = e.getMessage();
@@ -67,6 +82,18 @@ public class SSH {
         if (validSession) {
             System.out.println(this);
         }
+    }
+
+    public String runCommand(ByteArrayOutputStream responseStream, ClientChannel channel, long defaultTimeoutSeconds) throws java.io.IOException {
+        channel.open().verify(defaultTimeoutSeconds, TimeUnit.SECONDS);
+        try (OutputStream pipedIn = channel.getInvertedIn()) {
+            pipedIn.write("ssh -V \n".getBytes());
+            pipedIn.flush();
+        }
+
+        channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED),
+                TimeUnit.SECONDS.toMillis(defaultTimeoutSeconds));
+        return responseStream.toString();
     }
 
     @Override
