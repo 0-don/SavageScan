@@ -101,8 +101,8 @@
 
                     <executable>true</executable>
                     <jvmArguments>
-                        -Xms10g
-                        -Xmx10g
+                        -Xms15g
+                        -Xmx15g
                     </jvmArguments>
                 </configuration>
             </plugin>
