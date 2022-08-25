@@ -66,7 +66,7 @@ public class SSH {
                 channel.setOut(responseStream);
                 try {
                     message = runCommand(responseStream, channel, defaultTimeoutSeconds);
-                    System.out.println(message);
+                    System.out.println(this);
                     this.sshState = message.toLowerCase().contains("open");
                 } finally {
                     channel.close(false);
