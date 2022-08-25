@@ -12,7 +12,7 @@ public class SavageScanApplication implements CommandLineRunner {
 
 
 
-    public SavageScanApplication(SavageScan savageScan, ) {
+    public SavageScanApplication(SavageScan savageScan ) {
         this.savageScan = savageScan;
 
 
