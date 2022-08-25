@@ -1,26 +1,24 @@
 package don.savagescan.connector;
 
 import lombok.Data;
-import org.apache.sshd.client.SshClient;
-import org.apache.sshd.client.channel.ClientChannel;
-import org.apache.sshd.client.channel.ClientChannelEvent;
-import org.apache.sshd.client.session.ClientSession;
-import org.apache.sshd.common.channel.Channel;
+import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.common.IOUtils;
+import net.schmizz.sshj.connection.channel.direct.Session;
+import net.schmizz.sshj.connection.channel.direct.Session.Command;
+import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import org.springframework.stereotype.Component;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.util.EnumSet;
+import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @Data
 @Component
 public class SSH {
+    final SSHClient ssh = new SSHClient();
     private final String username = "root";
     private final int port = 22;
-    long defaultTimeoutSeconds = 10;
-    SshClient client = SshClient.setUpDefaultClient();
+
+    private Session session;
     private String message = "";
     private String host;
     private String password;
@@ -42,7 +40,9 @@ public class SSH {
     public boolean tryConnections() {
         for (String password : sshPasswords) {
             this.password = password;
+
             connect();
+            System.out.println(this);
 
             if (!this.validSession || sshState) {
                 break;
@@ -51,54 +51,34 @@ public class SSH {
         return sshState;
     }
 
-
     public void connect() {
 
-        SshClient client = SshClient.setUpDefaultClient();
-        client.start();
+        try {
+            ssh.addHostKeyVerifier(new PromiscuousVerifier());
+            ssh.setTimeout(10000);
+            ssh.connect(host, port);
+            ssh.authPassword(username, password);
+            Session session = ssh.startSession();
+            validSession = ssh.isAuthenticated();
 
-        try (ClientSession session = client.connect(username, host, port).verify(defaultTimeoutSeconds, TimeUnit.SECONDS).getSession()) {
-            session.addPasswordIdentity(password);
-            session.auth().verify(defaultTimeoutSeconds, TimeUnit.SECONDS);
-            this.validSession = session.isAuthenticated();
-            try (ByteArrayOutputStream responseStream = new ByteArrayOutputStream();
-                 ClientChannel channel = session.createChannel(Channel.CHANNEL_SHELL)) {
-                channel.setOut(responseStream);
-                try {
-                    message = runCommand(responseStream, channel, defaultTimeoutSeconds);
-                    System.out.println(this);
-                    this.sshState = message.toLowerCase().contains("open");
-                } finally {
-                    channel.close(false);
-                }
+            final Command cmd = session.exec("ssh -V");
+            message = IOUtils.readFully(cmd.getInputStream()).toString().toLowerCase() + IOUtils.readFully(cmd.getErrorStream()).toString().toLowerCase();
+
+            System.out.println(this);
+            sshState = message.contains("open");
+
+            session.close();
+            ssh.disconnect();
+        } catch (RuntimeException | IOException e) {
+            if (e.getMessage() != null) {
+                message = e.getMessage();
+                validSession = e.getMessage().contains("Exhausted available authentication methods");
             }
-            session.close(true);
-        } catch (Throwable e) {
-            message = e.getMessage();
-            validSession = message.contains("No more authentication methods available");
-        } finally {
-            client.stop();
         }
-
-//        if (validSession) {
-//            System.out.println(this);
-//        }
-    }
-
-    public String runCommand(ByteArrayOutputStream responseStream, ClientChannel channel, long defaultTimeoutSeconds) throws java.io.IOException {
-        channel.open().verify(defaultTimeoutSeconds, TimeUnit.SECONDS);
-        try (OutputStream pipedIn = channel.getInvertedIn()) {
-            pipedIn.write("ssh -V \n".getBytes());
-            pipedIn.flush();
-        }
-
-        channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED),
-                TimeUnit.SECONDS.toMillis(defaultTimeoutSeconds));
-        return responseStream.toString();
     }
 
     @Override
     public String toString() {
-        return "\nssh " + username + "@" + host + " Password:" + password + "\n" + message + "\n";
+        return "\nssh " + username + "@" + host + " Password: " + password + "\n" + message + "\n";
     }
 }

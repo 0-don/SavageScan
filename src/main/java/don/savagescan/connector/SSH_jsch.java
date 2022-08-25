@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class SSH_old {
+public class SSH_jsch {
     private final String username = "root";
     private final int port = 22;
     private String host;
@@ -19,7 +19,7 @@ public class SSH_old {
     private Session session = null;
     private JSch jsch = new JSch();
 
-    public SSH_old(List<String> sshPasswords) {
+    public SSH_jsch(List<String> sshPasswords) {
         this.sshPasswords = sshPasswords;
     }
 

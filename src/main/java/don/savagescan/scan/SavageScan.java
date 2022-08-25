@@ -41,7 +41,7 @@ public class SavageScan {
             boolean terminated = pool.awaitTermination(99, java.util.concurrent.TimeUnit.DAYS);
             System.out.println("terminated: " + terminated);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            System.out.println("InterruptedException: " + e.getMessage());
         }
 
     }
