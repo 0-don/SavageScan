@@ -68,7 +68,6 @@ public class SSH {
             final Command cmd = session.exec("ssh -V");
             message = IOUtils.readFully(cmd.getInputStream()).toString().toLowerCase() + IOUtils.readFully(cmd.getErrorStream()).toString().toLowerCase();
 
-            System.out.println(this);
             sshState = message.contains("open");
 
             session.close();
