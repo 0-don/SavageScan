@@ -65,8 +65,9 @@ public class SSH {
                  ClientChannel channel = session.createChannel(Channel.CHANNEL_SHELL)) {
                 channel.setOut(responseStream);
                 try {
-                    String responseString = runCommand(responseStream, channel, defaultTimeoutSeconds);
-                    this.sshState = responseString.toLowerCase().contains("open");
+                    message = runCommand(responseStream, channel, defaultTimeoutSeconds);
+                    System.out.println(message);
+                    this.sshState = message.toLowerCase().contains("open");
                 } finally {
                     channel.close(false);
                 }
@@ -79,9 +80,9 @@ public class SSH {
             client.stop();
         }
 
-        if (validSession) {
-            System.out.println(this);
-        }
+//        if (validSession) {
+//            System.out.println(this);
+//        }
     }
 
     public String runCommand(ByteArrayOutputStream responseStream, ClientChannel channel, long defaultTimeoutSeconds) throws java.io.IOException {
@@ -98,6 +99,6 @@ public class SSH {
 
     @Override
     public String toString() {
-        return "ssh " + username + ":" + password + "@" + host;
+        return "\nssh " + username + "@" + host + " Password:" + password + "\n" + message + "\n";
     }
 }
