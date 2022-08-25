@@ -43,11 +43,11 @@ public class SSH {
 
             connect();
 
-            if (sshState) {
+            if (sshState && validSession) {
                 System.out.println(this);
             }
 
-            if (!this.validSession || sshState) {
+            if (!validSession || sshState) {
                 break;
             }
         }
