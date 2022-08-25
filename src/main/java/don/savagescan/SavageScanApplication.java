@@ -26,8 +26,8 @@ public class SavageScanApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-//        savageScan.start();
-        tester.check();
+        savageScan.start();
+//        tester.check();
     }
 
 }
