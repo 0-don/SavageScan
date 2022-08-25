@@ -42,7 +42,7 @@ public class ScanConsumer implements Runnable {
                     scanConfig.getServerRepository().save(server);
                 }
 
-                if (scanConfig.getCurrent() < Ipv4.of(ip).asBigInteger().longValue() && new Random().nextInt(10000) <= 2) {
+                if (scanConfig.getCurrent() < Ipv4.of(ip).asBigInteger().longValue() && new Random().nextInt(100000) <= 2) {
                     scanConfig.setCurrent(Ipv4.of(ip).asBigInteger().longValue());
                     CurrentServer currentServer = scanConfig.getCurrentServerRepository().findFirstByOrderByIdDesc();
                     currentServer.setHost(ip);
