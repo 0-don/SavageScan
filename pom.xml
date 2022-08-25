@@ -98,6 +98,12 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+
+                    <executable>true</executable>
+                    <jvmArguments>
+                        -Xms16g
+                        -Xmx16g
+                    </jvmArguments>
                 </configuration>
             </plugin>
         </plugins>
