@@ -42,7 +42,7 @@ public class SSH {
             this.password = password;
 
             connect();
-            System.out.println(this);
+//            System.out.println(this);
 
             if (!this.validSession || sshState) {
                 break;
