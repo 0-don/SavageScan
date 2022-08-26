@@ -1,6 +1,7 @@
 package don.savagescan.connector;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.connection.channel.direct.Session;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Data
 @Component
+@NoArgsConstructor
 public class SSH {
     final SSHClient ssh = new SSHClient();
     private final String username = "root";
@@ -26,15 +28,14 @@ public class SSH {
     private boolean validSession = false;
     private boolean sshState = false;
 
-
     public SSH(List<String> sshPasswords) {
         this.sshPasswords = sshPasswords;
     }
 
-
     public void setHost(String host) {
         this.host = host;
         this.validSession = false;
+        this.sshState = false;
     }
 
     public boolean tryConnections() {

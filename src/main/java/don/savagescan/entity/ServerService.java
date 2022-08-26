@@ -2,6 +2,8 @@ package don.savagescan.entity;
 
 import don.savagescan.model.ServiceName;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -10,6 +12,7 @@ import java.util.Date;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class ServerService {
 
     @Id
@@ -20,6 +23,7 @@ public class ServerService {
     private String username;
     private String password;
     @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
     private Server server;
 
     @CreationTimestamp
@@ -32,9 +36,6 @@ public class ServerService {
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifyDate;
 
-
-    public ServerService() {
-    }
 
     public ServerService(ServiceName serviceName, String username, String password, int port) {
         this.serviceName = serviceName;

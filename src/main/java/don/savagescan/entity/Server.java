@@ -1,6 +1,8 @@
 package don.savagescan.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -11,6 +13,7 @@ import java.util.List;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class Server {
 
     @Id
@@ -32,16 +35,14 @@ public class Server {
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifyDate;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "server", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "server", fetch = FetchType.LAZY)
+    @ToString.Exclude
     private List<ServerService> serverServices = new ArrayList<>();
 
     public Server(String host) {
         this.host = host;
     }
 
-    public Server() {
-
-    }
 
     public void addServerService(ServerService serverService) {
         this.serverServices.add(serverService);
