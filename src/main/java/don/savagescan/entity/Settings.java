@@ -3,6 +3,7 @@ package don.savagescan.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -11,6 +12,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @Entity
+@ToString
 public class Settings {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

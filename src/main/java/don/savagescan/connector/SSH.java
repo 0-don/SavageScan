@@ -63,6 +63,7 @@ public class SSH {
             ssh.setConnectTimeout(10000);
             ssh.connect(host, port);
             ssh.authPassword(username, password);
+
             Session session = ssh.startSession();
             validSession = ssh.isAuthenticated();
 
@@ -84,6 +85,6 @@ public class SSH {
 
     @Override
     public String toString() {
-        return "\nssh " + username + "@" + host + " Password: " + password + "\n" + message + "\n";
+        return "ssh " + username + "@" + host + " Password: " + password + "\n" + message;
     }
 }

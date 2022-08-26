@@ -16,6 +16,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
+@ToString
 @NoArgsConstructor
 public class Server {
 
