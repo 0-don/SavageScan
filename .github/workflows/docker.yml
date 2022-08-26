@@ -27,6 +27,7 @@ jobs:
           echo SPRING_MAIL_PASSWORD=${{ secrets.SPRING_MAIL_PASSWORD }} >> .env
           
           echo SET_TO=${{ secrets.SET_TO }} >> .env
+          echo ENVIRONMENT=${{ secrets.ENVIRONMENT }} >> .env
           cat .env
 
       - name: Docker run

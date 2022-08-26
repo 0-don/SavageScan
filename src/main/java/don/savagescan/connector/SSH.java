@@ -69,7 +69,7 @@ public class SSH {
             final Command cmd = session.exec("ssh -V");
             message = IOUtils.readFully(cmd.getInputStream()).toString().toLowerCase() + IOUtils.readFully(cmd.getErrorStream()).toString().toLowerCase();
 
-            sshState = message.contains("open");
+            sshState = message.contains("openssh");
 
             session.close();
             ssh.disconnect();
