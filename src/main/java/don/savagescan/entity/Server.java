@@ -1,7 +1,8 @@
 package don.savagescan.entity;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -10,8 +11,10 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 public class Server {
@@ -35,7 +38,7 @@ public class Server {
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifyDate;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "server", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "server", fetch = FetchType.EAGER, orphanRemoval = true)
     @ToString.Exclude
     private List<ServerService> serverServices = new ArrayList<>();
 
@@ -49,4 +52,17 @@ public class Server {
         serverService.setServer(this);
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Server server = (Server) o;
+        return id == server.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

@@ -1,20 +1,22 @@
 package don.savagescan.entity;
 
 import don.savagescan.model.ServiceName;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 public class ServerService {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,13 +46,16 @@ public class ServerService {
         this.password = password;
     }
 
-    public ServerService(ServiceName serviceName, String username, String password, int port, Server server) {
-        this.serviceName = serviceName;
-        this.port = port;
-        this.username = username;
-        this.password = password;
-        this.server = server;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ServerService that = (ServerService) o;
+        return Objects.equals(id, that.id);
     }
 
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

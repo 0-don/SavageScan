@@ -20,7 +20,6 @@ public class SavageScanApplication implements CommandLineRunner {
         SpringApplication.run(SavageScanApplication.class, args);
     }
 
-
     @Override
     public void run(String... args) {
         savageScan.start();

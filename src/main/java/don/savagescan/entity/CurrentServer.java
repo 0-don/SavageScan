@@ -1,10 +1,15 @@
 package don.savagescan.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 public class CurrentServer {
 
@@ -16,12 +21,21 @@ public class CurrentServer {
     @Column(name = "host", length = 15, nullable = false, unique = true)
     private String host;
 
-    public CurrentServer() {
-
-    }
 
     public CurrentServer(String host) {
         this.host = host;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CurrentServer that = (CurrentServer) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
