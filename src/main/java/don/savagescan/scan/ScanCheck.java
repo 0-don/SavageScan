@@ -18,12 +18,12 @@ public class ScanCheck {
 
     private final SSH ssh;
 
-
     public void check() {
-        List<Server> servers = serverRepository.getWithSshServices(ServiceName.SSH);
+        List<Server> servers = serverRepository.findServerServices();
 
         for (Server server : servers) {
-            ServerService serverService = server.getServerServices().get(0);
+            ServerService serverService = server.getServerServices().stream()
+                    .filter(service -> service.getServiceName().equals(ServiceName.SSH)).findFirst().orElse(null);
 
             if (serverService != null) {
                 ssh.setHost(server.getHost());
