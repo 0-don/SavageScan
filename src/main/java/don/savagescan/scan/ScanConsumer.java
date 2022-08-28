@@ -11,14 +11,13 @@ import java.util.Random;
 
 public class ScanConsumer implements Runnable {
 
-    private final SSH ssh;
+//    private final SSH ssh;
 
     private final ScanConfig scanConfig;
 
 
     public ScanConsumer(ScanConfig scanConfig) {
         this.scanConfig = scanConfig;
-        this.ssh = new SSH(scanConfig.getSshPasswords());
     }
 
     @Override
@@ -26,6 +25,8 @@ public class ScanConsumer implements Runnable {
         while (scanConfig.getCurrent() < Ipv4.LAST_IPV4_ADDRESS.asBigInteger().longValue()) {
             try {
                 String ip = scanConfig.getQueue().take();
+
+                SSH ssh = new SSH(scanConfig.getSshPasswords());
                 ssh.setHost(ip);
                 boolean sshState = ssh.tryConnections();
 
