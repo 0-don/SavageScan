@@ -103,12 +103,6 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-
-                    <executable>true</executable>
-                    <jvmArguments>
-                        -Xms15g
-                        -Xmx15g
-                    </jvmArguments>
                 </configuration>
             </plugin>
         </plugins>
