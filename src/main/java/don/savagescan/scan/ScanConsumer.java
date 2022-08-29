@@ -23,35 +23,35 @@ public class ScanConsumer implements Runnable {
 
     @Override
     public void run() {
-//        while (scanConfig.getCurrent() < Ipv4.LAST_IPV4_ADDRESS.asBigInteger().longValue()) {
-        try {
-            String ip = scanConfig.getQueue().take();
-            ssh.setHost(ip);
-            boolean sshState = ssh.tryConnections();
+        while (scanConfig.getCurrent() < Ipv4.LAST_IPV4_ADDRESS.asBigInteger().longValue()) {
+            try {
+                String ip = scanConfig.getQueue().take();
+                ssh.setHost(ip);
+                boolean sshState = ssh.tryConnections();
 
-            if (sshState) {
-                Server server = new Server(ssh.getHost());
-                ServerService serverService = new ServerService(ServiceName.SSH, ssh.getUsername(), ssh.getPassword(), ssh.getPort());
+                if (sshState) {
+                    Server server = new Server(ssh.getHost());
+                    ServerService serverService = new ServerService(ServiceName.SSH, ssh.getUsername(), ssh.getPassword(), ssh.getPort());
 
 //                    String message = "ssh " + ssh.getUsername() + "@" + ssh.getHost() + " Password:" + ssh.getPassword();
 
 //                    scanConfig.getEmailService().sendMail(message);
 
 
-                server.addServerService(serverService);
-                scanConfig.getServerRepository().save(server);
-            }
+                    server.addServerService(serverService);
+                    scanConfig.getServerRepository().save(server);
+                }
 
-            if (scanConfig.getCurrent() < Ipv4.of(ip).asBigInteger().longValue() && new Random().nextInt(100000) <= 2) {
-                scanConfig.setCurrent(Ipv4.of(ip).asBigInteger().longValue());
-                CurrentServer currentServer = scanConfig.getCurrentServerRepository().findFirstByOrderByIdDesc();
-                currentServer.setHost(ip);
-                scanConfig.getCurrentServerRepository().save(currentServer);
-            }
+                if (scanConfig.getCurrent() < Ipv4.of(ip).asBigInteger().longValue() && new Random().nextInt(100000) <= 2) {
+                    scanConfig.setCurrent(Ipv4.of(ip).asBigInteger().longValue());
+                    CurrentServer currentServer = scanConfig.getCurrentServerRepository().findFirstByOrderByIdDesc();
+                    currentServer.setHost(ip);
+                    scanConfig.getCurrentServerRepository().save(currentServer);
+                }
 
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
-//        }
     }
 }

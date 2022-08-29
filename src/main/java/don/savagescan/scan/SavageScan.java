@@ -8,14 +8,12 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 @Component
 @RequiredArgsConstructor
 public class SavageScan {
 
     private static final ExecutorService pool = Executors.newCachedThreadPool();
-
 
     private final SettingsRepository settingsRepository;
     private final ScanConfig scanConfig;
@@ -30,32 +28,21 @@ public class SavageScan {
 
     public void start() {
 
-        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(threads);
-
-
         ScanProducer sshProducer = new ScanProducer(scanConfig);
-//        pool.execute(sshProducer);
-        executor.execute(sshProducer);
+        pool.execute(sshProducer);
 
-//        for (int i = 0; i < threads; i++) {
-//            ScanConsumer consumer = new ScanConsumer(scanConfig);
-//            pool.execute(consumer);
-//        }
-        while (executor.getActiveCount() < threads) {
-            if (executor.getActiveCount() < threads) {
-                ScanConsumer consumer = new ScanConsumer(scanConfig);
-                executor.execute(consumer);
-            }
+        for (int i = 0; i < threads; i++) {
+            ScanConsumer consumer = new ScanConsumer(scanConfig);
+            pool.execute(consumer);
         }
 
-//        pool.shutdown();
-//
-//        try {
-//            boolean terminated = pool.awaitTermination(99, java.util.concurrent.TimeUnit.DAYS);
-//            System.out.println("terminated: " + terminated);
-//        } catch (InterruptedException e) {
-//            System.out.println("InterruptedException: " + e.getMessage());
-//        }
+        pool.shutdown();
+        try {
+            boolean terminated = pool.awaitTermination(99, java.util.concurrent.TimeUnit.DAYS);
+            System.out.println("terminated: " + terminated);
+        } catch (InterruptedException e) {
+            System.out.println("InterruptedException: " + e.getMessage());
+        }
 
     }
 }

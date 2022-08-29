@@ -23,6 +23,8 @@ services:
       - 'traefik.tcp.routers.savagescan-db.service=savagescan-db'
   savagescan-service:
     container_name: savagescan-service
+    ports:
+      - 9010:9010
     depends_on:
       - savagescan-db
     build:
