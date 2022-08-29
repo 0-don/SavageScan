@@ -37,8 +37,8 @@ services:
   savagescan-service:
     container_name: savagescan-service
     network_mode: service:savagescan-vpn
-    ports:
-      - 9010:9010
+    #    ports:
+    #      - 9010:9010
     depends_on:
       - savagescan-db
       - savagescan-vpn
