@@ -4,6 +4,7 @@ services:
   savagescan-db:
     container_name: savagescan-db
     image: postgres:14.4-alpine
+    network_mode: bridge
     restart: always
     expose:
       - "${SPRING_DATASOURCE_PORT}"
@@ -11,14 +12,14 @@ services:
       - ${SPRING_DATASOURCE_PORT}:${SPRING_DATASOURCE_PORT}
     environment:
       - POSTGRES_DB=${SPRING_DATASOURCE_DATABASE}
-      - POSTGRES_USER=${SPRING_DATASOURCE_USER}
       - POSTGRES_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
     command: -p ${SPRING_DATASOURCE_PORT}
   savagescan-vpn:
     image: azinchen/nordvpn:latest
     container_name: savagescan-vpn
-#    ports:
-#      - "9011:9010"
+    network_mode: bridge
+    ports:
+      - "9010:9010"
     cap_add:
       - NET_ADMIN
     devices:
@@ -30,9 +31,16 @@ services:
       - COUNTRY=125
       - RANDOM_TOP=10
     restart: always
+    links:
+      - savagescan-db
   savagescan-service:
     container_name: savagescan-service
     network_mode: service:savagescan-vpn
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://savagescan-db:${SPRING_DATASOURCE_PORT}/${SPRING_DATASOURCE_DATABASE}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - ENVIRONMENT=${ENVIRONMENT}
     depends_on:
       - savagescan-db
       - savagescan-vpn

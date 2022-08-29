@@ -20,13 +20,7 @@ jobs:
           echo SPRING_DATASOURCE_DATABASE=${{ secrets.SPRING_DATASOURCE_DATABASE }} >> .env
           echo SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }} >> .env
           echo SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }} >> .env
-          
-          echo SPRING_MAIL_HOST=${{ secrets.SPRING_MAIL_HOST }} >> .env
-          echo SPRING_MAIL_PORT=${{ secrets.SPRING_MAIL_PORT }} >> .env
-          echo SPRING_MAIL_USERNAME=${{ secrets.SPRING_MAIL_USERNAME }} >> .env
-          echo SPRING_MAIL_PASSWORD=${{ secrets.SPRING_MAIL_PASSWORD }} >> .env
-          
-          echo SET_TO=${{ secrets.SET_TO }} >> .env
+
           echo ENVIRONMENT=${{ secrets.ENVIRONMENT }} >> .env
           
           echo NORDVPN_USER=${{ secrets.NORDVPN_USER }} >> .env

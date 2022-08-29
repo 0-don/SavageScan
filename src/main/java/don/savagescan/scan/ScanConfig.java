@@ -7,7 +7,6 @@ import com.google.gson.stream.JsonReader;
 import don.savagescan.entity.CurrentServer;
 import don.savagescan.repositories.CurrentServerRepository;
 import don.savagescan.repositories.ServerRepository;
-import don.savagescan.services.EmailServiceImpl;
 import don.savagescan.utils.IpRange;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +32,6 @@ public class ScanConfig {
     private final List<String> sshPasswords = new ArrayList<>();
     private final ServerRepository serverRepository;
     private final CurrentServerRepository currentServerRepository;
-    private final EmailServiceImpl emailService;
     private Ipv4 start = Ipv4.FIRST_IPV4_ADDRESS;
     private long current = start.asBigInteger().longValue();
     @Value("classpath:sshPasswords.txt")
@@ -41,10 +39,9 @@ public class ScanConfig {
     @Value("classpath:reservedIps.json")
     private Resource reservedIpsFile;
 
-    public ScanConfig(ServerRepository serverRepository, CurrentServerRepository currentServerRepository, EmailServiceImpl emailService) {
+    public ScanConfig(ServerRepository serverRepository, CurrentServerRepository currentServerRepository) {
         this.serverRepository = serverRepository;
         this.currentServerRepository = currentServerRepository;
-        this.emailService = emailService;
     }
 
     @PostConstruct
