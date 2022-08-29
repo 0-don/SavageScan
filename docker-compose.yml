@@ -27,6 +27,7 @@ services:
       - USER=${NORDVPN_USER}
       - PASS=${NORDVPN_PASSWORD}
       - GROUP=Europe
+      - COUNTRY=125
       - RANDOM_TOP=10
     restart: always
   savagescan-service:
