@@ -21,8 +21,22 @@ services:
       - 'traefik.tcp.services.savagescan-db.loadbalancer.server.port=${SPRING_DATASOURCE_PORT}'
       - 'traefik.tcp.routers.savagescan-db.entrypoints=savagescan-db'
       - 'traefik.tcp.routers.savagescan-db.service=savagescan-db'
+  savagescan-vpn:
+    image: azinchen/nordvpn:latest
+    container_name: savagescan-vpn
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    environment:
+      - USER=${NORDVPN_USER}
+      - PASS=${NORDVPN_PASSWORD}
+      - GROUP=Europe
+      - RANDOM_TOP=10
+    restart: always
   savagescan-service:
     container_name: savagescan-service
+    network_mode: service:savagescan-vpn
     ports:
       - 9010:9010
     depends_on:

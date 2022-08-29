@@ -28,6 +28,9 @@ jobs:
           
           echo SET_TO=${{ secrets.SET_TO }} >> .env
           echo ENVIRONMENT=${{ secrets.ENVIRONMENT }} >> .env
+          
+          echo NORDVPN_USER=${{ secrets.NORDVPN_USER }} >> .env
+          echo NORDVPN_PASSWORD=${{ secrets.NORDVPN_PASSWORD }} >> .env
           cat .env
 
       - name: Docker run
