@@ -31,8 +31,6 @@ public class SavageScanApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-
-
         try {
             URL yahoo = new URL("https://api.ipify.org/?format=text");
             URLConnection yc = yahoo.openConnection();
@@ -44,11 +42,12 @@ public class SavageScanApplication implements CommandLineRunner {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-//        if (environment.equals("production")) {
-//            savageScan.start();
-//        } else {
-//            scanCheck.check();
-//        }
+
+        if (environment.equals("production")) {
+            savageScan.start();
+        } else {
+            scanCheck.check();
+        }
     }
 
 }

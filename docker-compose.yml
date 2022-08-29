@@ -14,13 +14,6 @@ services:
       - POSTGRES_USER=${SPRING_DATASOURCE_USER}
       - POSTGRES_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
     command: -p ${SPRING_DATASOURCE_PORT}
-  #    labels:
-  #      - 'traefik.enable=true'
-  #      - 'traefik.tcp.routers.tcp.tls=true'
-  #      - 'traefik.tcp.routers.savagescan-db.rule=HostSNI(`*`)'
-  #      - 'traefik.tcp.services.savagescan-db.loadbalancer.server.port=${SPRING_DATASOURCE_PORT}'
-  #      - 'traefik.tcp.routers.savagescan-db.entrypoints=savagescan-db'
-  #      - 'traefik.tcp.routers.savagescan-db.service=savagescan-db'
   savagescan-vpn:
     image: azinchen/nordvpn:latest
     container_name: savagescan-vpn
@@ -37,8 +30,8 @@ services:
   savagescan-service:
     container_name: savagescan-service
     network_mode: service:savagescan-vpn
-    #    ports:
-    #      - 9010:9010
+    ports:
+      - "9010:9010"
     depends_on:
       - savagescan-db
       - savagescan-vpn
