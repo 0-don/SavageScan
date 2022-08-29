@@ -17,8 +17,8 @@ services:
   savagescan-vpn:
     image: azinchen/nordvpn:latest
     container_name: savagescan-vpn
-    ports:
-      - "9010:9010"
+#    ports:
+#      - "9011:9010"
     cap_add:
       - NET_ADMIN
     devices:
