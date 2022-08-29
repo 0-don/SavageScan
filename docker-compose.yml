@@ -7,8 +7,6 @@ services:
     restart: always
     expose:
       - "${SPRING_DATASOURCE_PORT}"
-    networks:
-      - proxy
     environment:
       - POSTGRES_DB=${SPRING_DATASOURCE_DATABASE}
       - POSTGRES_USER=${SPRING_DATASOURCE_USER}
@@ -46,8 +44,6 @@ services:
       context: ./
       dockerfile: Dockerfile
     restart: always
-    networks:
-      - proxy
 
 volumes:
   postgres:
