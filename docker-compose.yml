@@ -7,20 +7,20 @@ services:
     restart: always
     expose:
       - "${SPRING_DATASOURCE_PORT}"
-    networks:
-      - proxy
+    ports:
+      - ${SPRING_DATASOURCE_PORT}:${SPRING_DATASOURCE_PORT}
     environment:
       - POSTGRES_DB=${SPRING_DATASOURCE_DATABASE}
       - POSTGRES_USER=${SPRING_DATASOURCE_USER}
       - POSTGRES_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
     command: -p ${SPRING_DATASOURCE_PORT}
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.tcp.routers.tcp.tls=true'
-      - 'traefik.tcp.routers.savagescan-db.rule=HostSNI(`*`)'
-      - 'traefik.tcp.services.savagescan-db.loadbalancer.server.port=${SPRING_DATASOURCE_PORT}'
-      - 'traefik.tcp.routers.savagescan-db.entrypoints=savagescan-db'
-      - 'traefik.tcp.routers.savagescan-db.service=savagescan-db'
+  #    labels:
+  #      - 'traefik.enable=true'
+  #      - 'traefik.tcp.routers.tcp.tls=true'
+  #      - 'traefik.tcp.routers.savagescan-db.rule=HostSNI(`*`)'
+  #      - 'traefik.tcp.services.savagescan-db.loadbalancer.server.port=${SPRING_DATASOURCE_PORT}'
+  #      - 'traefik.tcp.routers.savagescan-db.entrypoints=savagescan-db'
+  #      - 'traefik.tcp.routers.savagescan-db.service=savagescan-db'
   savagescan-vpn:
     image: azinchen/nordvpn:latest
     container_name: savagescan-vpn
