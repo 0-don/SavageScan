@@ -75,15 +75,7 @@ public class SSH {
 
             session.close();
             ssh.disconnect();
-            ssh.close();
         } catch (RuntimeException | IOException e) {
-            try {
-                session.close();
-                ssh.disconnect();
-                ssh.close();
-            } catch (IOException ignored) {
-
-            }
 
             if (e.getMessage() != null) {
                 message = e.getMessage();
