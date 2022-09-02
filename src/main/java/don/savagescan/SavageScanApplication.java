@@ -12,7 +12,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+
+import static java.net.http.HttpResponse.BodyHandlers;
 
 @SpringBootApplication
 @RequiredArgsConstructor
@@ -34,7 +35,7 @@ public class SavageScanApplication implements CommandLineRunner {
         try {
             HttpClient httpClient = HttpClient.newBuilder().build();
             HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create("https://api.ipify.org/?format=text")).build();
-            var response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            var response = httpClient.send(request, BodyHandlers.ofString());
             System.out.println(response.body());
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
