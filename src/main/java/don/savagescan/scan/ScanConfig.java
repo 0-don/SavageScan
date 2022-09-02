@@ -14,10 +14,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,7 +45,10 @@ public class ScanConfig {
 
     @PostConstruct
     public void init() throws IOException {
-        sshPasswords.addAll(Files.readAllLines(sshPasswordsFile.getFile().toPath(), StandardCharsets.UTF_8));
+        BufferedReader br = new BufferedReader(new InputStreamReader(sshPasswordsFile.getInputStream()));
+        for (String line; (line = br.readLine()) != null; ) {
+            sshPasswords.add(line);
+        }
 
         JsonReader reader = new JsonReader(new InputStreamReader(reservedIpsFile.getInputStream()));
         IpRange[] reservedIps = new Gson().fromJson(reader, IpRange[].class);

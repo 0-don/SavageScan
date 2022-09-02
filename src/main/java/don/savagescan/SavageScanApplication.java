@@ -8,11 +8,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 @SpringBootApplication
 @RequiredArgsConstructor
@@ -32,14 +32,11 @@ public class SavageScanApplication implements CommandLineRunner {
     @Override
     public void run(String... args) {
         try {
-            URL yahoo = new URL("https://api.ipify.org/?format=text");
-            URLConnection yc = yahoo.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
-            String inputLine;
-            while ((inputLine = in.readLine()) != null)
-                System.out.println(inputLine);
-            in.close();
-        } catch (IOException e) {
+            HttpClient httpClient = HttpClient.newBuilder().build();
+            HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create("https://api.ipify.org/?format=text")).build();
+            var response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
 
