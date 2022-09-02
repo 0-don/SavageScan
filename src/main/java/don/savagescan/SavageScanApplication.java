@@ -33,9 +33,8 @@ public class SavageScanApplication implements CommandLineRunner {
     @Override
     public void run(String... args) {
         try {
-            HttpClient httpClient = HttpClient.newBuilder().build();
             HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create("https://api.ipify.org/?format=text")).build();
-            var response = httpClient.send(request, BodyHandlers.ofString());
+            var response = HttpClient.newBuilder().build().send(request, BodyHandlers.ofString());
             System.out.println(response.body());
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
