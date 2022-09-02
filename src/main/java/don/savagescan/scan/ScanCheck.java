@@ -27,10 +27,11 @@ public class ScanCheck {
 
             if (serverService != null) {
                 ssh.setHost(server.getHost());
+                ssh.setUsername(serverService.getUsername());
                 ssh.setPassword(serverService.getPassword());
 
                 ssh.connect();
-
+                
                 if (!ssh.isSshState() && !ssh.isValidSession()) {
                     serverRepository.deleteById(server.getId());
                 }

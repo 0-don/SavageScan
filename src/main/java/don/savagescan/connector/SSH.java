@@ -16,9 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 public class SSH {
 
-    private final String username = "root";
     private final int port = 22;
-
+    private String username = "root";
     private Session session;
     private String message = "";
     private String host;
@@ -63,20 +62,17 @@ public class SSH {
             ssh.setConnectTimeout(10000);
             ssh.connect(host, port);
             ssh.authPassword(username, password);
+            validSession = ssh.isAuthenticated();
 
             try (Session session = ssh.startSession()) {
-                validSession = ssh.isAuthenticated();
 
                 final Session.Command cmd = session.exec("ssh -V");
+
                 message = IOUtils.readFully(cmd.getInputStream()).toString().toLowerCase() + IOUtils.readFully(cmd.getErrorStream()).toString().toLowerCase();
 
                 sshState = message.contains("openssh");
 
-            } catch (IOException e) {
-                if (e.getMessage() != null) {
-                    message = e.getMessage();
-                    validSession = e.getMessage().contains("Exhausted available authentication methods");
-                }
+            } catch (IOException ignored) {
             }
         } catch (IOException e) {
             if (e.getMessage() != null) {
