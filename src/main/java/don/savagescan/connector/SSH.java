@@ -40,13 +40,7 @@ public class SSH {
         for (String password : sshPasswords) {
             this.password = password;
 
-
             connect();
-
-            if (!password.contains("root")) {
-                System.out.println(this);
-            }
-
 
             if (validSsh && validSession) {
                 System.out.println(this);
