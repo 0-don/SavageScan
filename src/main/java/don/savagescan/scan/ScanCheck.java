@@ -31,8 +31,8 @@ public class ScanCheck {
                 ssh.setPassword(serverService.getPassword());
 
                 ssh.connect();
-                
-                if (!ssh.isSshState() && !ssh.isValidSession()) {
+
+                if (!ssh.isValidSsh() && !ssh.isValidSession()) {
                     serverRepository.deleteById(server.getId());
                 }
 

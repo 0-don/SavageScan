@@ -18,13 +18,12 @@ public class SSH {
 
     private final int port = 22;
     private String username = "root";
-    private Session session;
     private String message = "";
     private String host;
     private String password;
     private List<String> sshPasswords;
     private boolean validSession = false;
-    private boolean sshState = false;
+    private boolean validSsh = false;
 
     public SSH(List<String> sshPasswords) {
         this.sshPasswords = sshPasswords;
@@ -33,7 +32,7 @@ public class SSH {
     public void setHost(String host) {
         this.host = host;
         this.validSession = false;
-        this.sshState = false;
+        this.validSsh = false;
         this.message = "";
     }
 
@@ -43,15 +42,15 @@ public class SSH {
 
             connect();
 
-            if (sshState && validSession) {
+            if (validSsh && validSession) {
                 System.out.println(this);
             }
 
-            if (!validSession || sshState) {
+            if (!validSession || validSsh) {
                 break;
             }
         }
-        return sshState;
+        return validSsh;
     }
 
     public void connect() {
@@ -65,13 +64,10 @@ public class SSH {
             validSession = ssh.isAuthenticated();
 
             try (Session session = ssh.startSession()) {
-
+                System.out.println(this);
                 final Session.Command cmd = session.exec("ssh -V");
-
                 message = IOUtils.readFully(cmd.getInputStream()).toString().toLowerCase() + IOUtils.readFully(cmd.getErrorStream()).toString().toLowerCase();
-
-                sshState = message.contains("openssh");
-
+                validSsh = message.contains("openssh");
             } catch (IOException ignored) {
             }
         } catch (IOException e) {
