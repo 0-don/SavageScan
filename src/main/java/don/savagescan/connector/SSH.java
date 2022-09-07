@@ -64,7 +64,6 @@ public class SSH {
             validSession = ssh.isAuthenticated();
 
             try (Session session = ssh.startSession()) {
-                System.out.println(this);
                 final Session.Command cmd = session.exec("ssh -V");
                 message = IOUtils.readFully(cmd.getInputStream()).toString().toLowerCase() + IOUtils.readFully(cmd.getErrorStream()).toString().toLowerCase();
                 validSsh = message.contains("openssh");
