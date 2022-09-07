@@ -41,11 +41,12 @@ public class SSH {
             this.password = password;
 
 
+            connect();
+
             if (!password.contains("root")) {
-                System.out.println(this.password);
+                System.out.println(this);
             }
 
-            connect();
 
             if (validSsh && validSession) {
                 System.out.println(this);
