@@ -30,6 +30,7 @@ public class ScanConsumer implements Runnable {
                 boolean sshState = ssh.tryConnections();
 
                 if (sshState) {
+                    System.out.println(this);
                     Server server = new Server(ssh.getHost());
                     ServerService serverService = new ServerService(ServiceName.SSH, ssh.getUsername(), ssh.getPassword(), ssh.getPort());
 

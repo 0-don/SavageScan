@@ -42,10 +42,6 @@ public class SSH {
 
             connect();
 
-            if (validSsh && validSession) {
-                System.out.println(this);
-            }
-
             if (!validSession || validSsh) {
                 break;
             }
@@ -66,6 +62,7 @@ public class SSH {
             try (Session session = ssh.startSession()) {
                 final Session.Command cmd = session.exec("ssh -V");
                 message = IOUtils.readFully(cmd.getInputStream()).toString().toLowerCase() + IOUtils.readFully(cmd.getErrorStream()).toString().toLowerCase();
+                System.out.println(this);
                 validSsh = message.contains("openssh");
             } catch (IOException ignored) {
             }
