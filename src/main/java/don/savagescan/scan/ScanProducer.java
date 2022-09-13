@@ -2,18 +2,20 @@ package don.savagescan.scan;
 
 import com.github.jgonian.ipmath.Ipv4;
 import com.github.jgonian.ipmath.Ipv4Range;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component
+@Scope("prototype")
+@RequiredArgsConstructor
 public class ScanProducer implements Runnable {
     private final ScanConfig scanConfig;
-    private Ipv4 start;
-
-    public ScanProducer(ScanConfig scanConfig) {
-        this.scanConfig = scanConfig;
-        this.start = scanConfig.getStart();
-    }
 
     @Override
     public void run() {
+        Ipv4 start = scanConfig.getStart();
+
         do {
 
             Ipv4 current = start.next();

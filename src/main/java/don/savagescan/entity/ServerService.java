@@ -21,6 +21,8 @@ public class ServerService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Enumerated(EnumType.STRING)
     private ServiceName serviceName;
     private int port;
     private String username;

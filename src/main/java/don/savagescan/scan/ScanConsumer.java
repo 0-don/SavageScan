@@ -3,51 +3,47 @@ package don.savagescan.scan;
 import com.github.jgonian.ipmath.Ipv4;
 import don.savagescan.connector.SSH;
 import don.savagescan.entity.CurrentServer;
-import don.savagescan.entity.Server;
-import don.savagescan.entity.ServerService;
-import don.savagescan.model.ServiceName;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.Random;
 
+@Component
+@Scope("prototype")
+@RequiredArgsConstructor
 public class ScanConsumer implements Runnable {
-
-    private final SSH ssh;
 
     private final ScanConfig scanConfig;
 
-
-    public ScanConsumer(ScanConfig scanConfig) {
-        this.scanConfig = scanConfig;
-        this.ssh = new SSH(scanConfig.getSshPasswords());
-    }
+    private final ApplicationContext applicationContext;
 
     @Override
     public void run() {
+        SSH ssh = applicationContext.getBean(SSH.class, scanConfig);
+
         while (scanConfig.getCurrent() < Ipv4.LAST_IPV4_ADDRESS.asBigInteger().longValue()) {
             try {
                 String ip = scanConfig.getQueue().take();
+
                 ssh.setHost(ip);
-                boolean sshState = ssh.tryConnections();
+                ssh.tryConnections();
 
-                if (sshState) {
-                    System.out.println(this);
-                    Server server = new Server(ssh.getHost());
-                    ServerService serverService = new ServerService(ServiceName.SSH, ssh.getUsername(), ssh.getPassword(), ssh.getPort());
-
-                    server.addServerService(serverService);
-                    scanConfig.getServerRepository().save(server);
-                }
-
-                if (scanConfig.getCurrent() < Ipv4.of(ip).asBigInteger().longValue() && new Random().nextInt(100000) <= 2) {
-                    scanConfig.setCurrent(Ipv4.of(ip).asBigInteger().longValue());
-                    CurrentServer currentServer = scanConfig.getCurrentServerRepository().findFirstByOrderByIdDesc();
-                    currentServer.setHost(ip);
-                    scanConfig.getCurrentServerRepository().save(currentServer);
-                }
+                setCurrentIp(ip);
 
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    public void setCurrentIp(String ip) {
+        if (scanConfig.getCurrent() < Ipv4.of(ip).asBigInteger().longValue() && new Random().nextInt(100000) <= 2) {
+            scanConfig.setCurrent(Ipv4.of(ip).asBigInteger().longValue());
+            CurrentServer currentServer = scanConfig.getCurrentServerRepository().findFirstByOrderByIdDesc();
+            currentServer.setHost(ip);
+            scanConfig.getCurrentServerRepository().save(currentServer);
         }
     }
 }

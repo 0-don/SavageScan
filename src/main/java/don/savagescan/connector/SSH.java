@@ -1,7 +1,11 @@
 package don.savagescan.connector;
 
+import don.savagescan.entity.Server;
+import don.savagescan.entity.ServerService;
+import don.savagescan.model.ServiceName;
+import don.savagescan.scan.ScanConfig;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.connection.channel.direct.Session;
@@ -9,25 +13,23 @@ import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.List;
 
 @Data
 @Component
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class SSH {
 
     private final int port = 22;
+
+    private final ScanConfig scanConfig;
+
     private String username = "root";
-    private String message = "";
+    private String message;
     private String host;
     private String password;
-    private List<String> sshPasswords;
+
     private boolean validSession = false;
     private boolean validSsh = false;
-
-    public SSH(List<String> sshPasswords) {
-        this.sshPasswords = sshPasswords;
-    }
 
     public void setHost(String host) {
         this.host = host;
@@ -36,22 +38,24 @@ public class SSH {
         this.message = "";
     }
 
-    public boolean tryConnections() {
-        for (String password : sshPasswords) {
-            this.password = password;
+    public void tryConnections() {
+        for (String password : scanConfig.getSshPasswords()) {
+            setPassword(password);
 
             connect();
 
             if (!validSession || validSsh) {
+                save();
+//                if (validSsh) save();
                 break;
             }
         }
-        return validSsh;
     }
 
     public void connect() {
 
         try (final SSHClient ssh = new SSHClient()) {
+            System.out.println(this);
             ssh.addHostKeyVerifier(new PromiscuousVerifier());
             ssh.setTimeout(10000);
             ssh.setConnectTimeout(10000);
@@ -62,7 +66,6 @@ public class SSH {
             try (Session session = ssh.startSession()) {
                 final Session.Command cmd = session.exec("ssh -V");
                 message = IOUtils.readFully(cmd.getInputStream()).toString().toLowerCase() + IOUtils.readFully(cmd.getErrorStream()).toString().toLowerCase();
-                System.out.println(this);
                 validSsh = message.contains("openssh");
             } catch (IOException ignored) {
             }
@@ -71,8 +74,15 @@ public class SSH {
                 message = e.getMessage();
                 validSession = e.getMessage().contains("Exhausted available authentication methods");
             }
-
         }
+    }
+
+    public void save() {
+        Server server = new Server(getHost());
+        ServerService serverService = new ServerService(ServiceName.SSH, getUsername(), getPassword(), getPort());
+
+        server.addServerService(serverService);
+        scanConfig.getServerRepository().save(server);
     }
 
     @Override

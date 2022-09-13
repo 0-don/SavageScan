@@ -9,6 +9,7 @@ import don.savagescan.repositories.CurrentServerRepository;
 import don.savagescan.repositories.ServerRepository;
 import don.savagescan.utils.IpRange;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -25,29 +26,35 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 @Component
 @Data
+@RequiredArgsConstructor
 public class ScanConfig {
     private final BlockingQueue<String> queue = new LinkedBlockingQueue<>(100_000);
     private final List<Ipv4Range> ipv4ReservedIps = new ArrayList<>();
     private final List<String> sshPasswords = new ArrayList<>();
+
+    private final List<String> ftpAccesses = new ArrayList<>();
     private final ServerRepository serverRepository;
     private final CurrentServerRepository currentServerRepository;
     private Ipv4 start = Ipv4.FIRST_IPV4_ADDRESS;
     private long current = start.asBigInteger().longValue();
     @Value("classpath:sshPasswords.txt")
     private Resource sshPasswordsFile;
+
+    @Value("classpath:ftpAccesses.txt")
+    private Resource ftpAccessesFile;
     @Value("classpath:reservedIps.json")
     private Resource reservedIpsFile;
 
-    public ScanConfig(ServerRepository serverRepository, CurrentServerRepository currentServerRepository) {
-        this.serverRepository = serverRepository;
-        this.currentServerRepository = currentServerRepository;
-    }
-
     @PostConstruct
     public void init() throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(sshPasswordsFile.getInputStream()));
-        for (String line; (line = br.readLine()) != null; ) {
+        BufferedReader brSsh = new BufferedReader(new InputStreamReader(sshPasswordsFile.getInputStream()));
+        for (String line; (line = brSsh.readLine()) != null; ) {
             sshPasswords.add(line);
+        }
+
+        BufferedReader brFtp = new BufferedReader(new InputStreamReader(sshPasswordsFile.getInputStream()));
+        for (String line; (line = brFtp.readLine()) != null; ) {
+            ftpAccesses.add(line);
         }
 
         JsonReader reader = new JsonReader(new InputStreamReader(reservedIpsFile.getInputStream()));
