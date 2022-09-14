@@ -14,4 +14,6 @@ public interface ServerRepository extends JpaRepository<Server, Long> {
 
     @Query("SELECT DISTINCT server FROM Server server JOIN FETCH server.serverServices serverService")
     List<Server> findServerServices();
+
+    Server findByHost(String host);
 }

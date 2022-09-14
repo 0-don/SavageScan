@@ -21,18 +21,15 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 @Component
 @Data
 @RequiredArgsConstructor
 public class ScanConfig {
-    private final BlockingQueue<String> queue = new LinkedBlockingQueue<>(100_000);
     private final List<Ipv4Range> ipv4ReservedIps = new ArrayList<>();
     private final List<String> sshPasswords = new ArrayList<>();
-
     private final List<String> ftpAccesses = new ArrayList<>();
+
     private final ServerRepository serverRepository;
     private final CurrentServerRepository currentServerRepository;
     private Ipv4 start = Ipv4.FIRST_IPV4_ADDRESS;

@@ -6,11 +6,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.BlockingQueue;
+
 @Component
 @Scope("prototype")
 @RequiredArgsConstructor
 public class ScanProducer implements Runnable {
+
     private final ScanConfig scanConfig;
+    private final BlockingQueue<String> queue;
 
     @Override
     public void run() {
@@ -28,7 +32,7 @@ public class ScanProducer implements Runnable {
             start = current;
 
             try {
-                scanConfig.getQueue().put(start.toString());
+                queue.put(start.toString());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

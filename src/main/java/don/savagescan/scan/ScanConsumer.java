@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
+import java.util.concurrent.BlockingQueue;
 
 @Component
 @Scope("prototype")
@@ -19,13 +20,15 @@ public class ScanConsumer implements Runnable {
 
     private final ApplicationContext applicationContext;
 
+    private final BlockingQueue<String> queue;
+
     @Override
     public void run() {
-        SSH ssh = applicationContext.getBean(SSH.class, scanConfig);
+        SSH ssh = applicationContext.getBean(SSH.class);
 
         while (scanConfig.getCurrent() < Ipv4.LAST_IPV4_ADDRESS.asBigInteger().longValue()) {
             try {
-                String ip = scanConfig.getQueue().take();
+                String ip = queue.take();
 
                 ssh.setHost(ip);
                 ssh.tryConnections();

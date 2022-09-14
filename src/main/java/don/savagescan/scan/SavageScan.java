@@ -8,16 +8,20 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @Component
 @RequiredArgsConstructor
 public class SavageScan {
+
     private static final ExecutorService pool = Executors.newCachedThreadPool();
+    private final BlockingQueue<String> queue = new LinkedBlockingQueue<>(100_000);
     private final ApplicationContext applicationContext;
     private final SettingsRepository settingsRepository;
-
+    private final ScanConfig scanConfig;
     @Value("${environment}")
     private String environment;
     private int threads = 0;
@@ -32,15 +36,16 @@ public class SavageScan {
 
         threads = environment.equals("production") ? threads : 1;
 
-        ScanProducer sshProducer = applicationContext.getBean(ScanProducer.class);
+        ScanProducer sshProducer = applicationContext.getBean(ScanProducer.class, scanConfig, queue);
         pool.execute(sshProducer);
 
         for (int i = 0; i < threads; i++) {
-            ScanConsumer consumer = applicationContext.getBean(ScanConsumer.class);
+            ScanConsumer consumer = applicationContext.getBean(ScanConsumer.class, scanConfig, applicationContext, queue);
             pool.execute(consumer);
         }
 
         pool.shutdown();
+
         try {
             boolean terminated = pool.awaitTermination(99, java.util.concurrent.TimeUnit.DAYS);
             System.out.println("terminated: " + terminated);

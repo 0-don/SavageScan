@@ -10,24 +10,23 @@ import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 @Data
 @Component
+@Scope("prototype")
 @RequiredArgsConstructor
 public class SSH {
 
     private final int port = 22;
-
     private final ScanConfig scanConfig;
-
     private String username = "root";
     private String message;
     private String host;
     private String password;
-
     private boolean validSession = false;
     private boolean validSsh = false;
 
@@ -78,11 +77,30 @@ public class SSH {
     }
 
     public void save() {
-        Server server = new Server(getHost());
-        ServerService serverService = new ServerService(ServiceName.SSH, getUsername(), getPassword(), getPort());
+        Server checkServer = scanConfig.getServerRepository().findByHost(host);
 
-        server.addServerService(serverService);
-        scanConfig.getServerRepository().save(server);
+        if (checkServer == null) {
+            Server server = new Server(getHost());
+            ServerService serverService = new ServerService(ServiceName.SSH, getUsername(), getPassword(), getPort());
+
+            server.addServerService(serverService);
+            scanConfig.getServerRepository().save(server);
+        } else {
+            ServerService checkServerService = checkServer.getServerServices().stream().filter(s -> s.getServiceName().equals(ServiceName.SSH)).findFirst().orElse(null);
+
+            if (checkServerService == null) {
+                ServerService serverService = new ServerService(ServiceName.SSH, getUsername(), getPassword(), getPort());
+                checkServer.addServerService(serverService);
+                scanConfig.getServerRepository().save(checkServer);
+            } else {
+                checkServerService.setUsername(getUsername());
+                checkServerService.setPassword(getPassword());
+                checkServerService.setPort(getPort());
+                scanConfig.getServerRepository().save(checkServer);
+            }
+        }
+
+
     }
 
     @Override
