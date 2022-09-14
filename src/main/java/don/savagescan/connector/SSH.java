@@ -44,8 +44,8 @@ public class SSH {
             connect();
 
             if (!validSession || validSsh) {
-                save();
-//                if (validSsh) save();
+//                save();
+                if (validSsh) save();
                 break;
             }
         }
