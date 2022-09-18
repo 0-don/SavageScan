@@ -20,7 +20,6 @@ import java.io.IOException;
 @Scope("prototype")
 @RequiredArgsConstructor
 public class SSH {
-
     private final int port = 22;
     private final ScanConfig scanConfig;
     private String username = "root";
@@ -44,7 +43,7 @@ public class SSH {
             connect();
 
             if (!validSession || validSsh) {
-//                save();
+//////                save();
                 if (validSsh) save();
                 break;
             }
