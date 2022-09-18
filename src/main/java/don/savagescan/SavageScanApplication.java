@@ -1,6 +1,5 @@
 package don.savagescan;
 
-import don.savagescan.connector.FTP;
 import don.savagescan.scan.SavageScan;
 import don.savagescan.scan.ScanCheck;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,6 @@ public class SavageScanApplication implements CommandLineRunner {
 
     private final ScanCheck scanCheck;
 
-    private final FTP ftp;
 
     @Value("${environment}")
     private String environment;
