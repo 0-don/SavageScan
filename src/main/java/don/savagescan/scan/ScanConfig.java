@@ -36,7 +36,6 @@ public class ScanConfig {
     private long current = start.asBigInteger().longValue();
     @Value("classpath:sshPasswords.txt")
     private Resource sshPasswordsFile;
-
     @Value("classpath:ftpAccesses.txt")
     private Resource ftpAccessesFile;
     @Value("classpath:reservedIps.json")
@@ -49,7 +48,7 @@ public class ScanConfig {
             sshPasswords.add(line);
         }
 
-        BufferedReader brFtp = new BufferedReader(new InputStreamReader(sshPasswordsFile.getInputStream()));
+        BufferedReader brFtp = new BufferedReader(new InputStreamReader(ftpAccessesFile.getInputStream()));
         for (String line; (line = brFtp.readLine()) != null; ) {
             ftpAccesses.add(line);
         }

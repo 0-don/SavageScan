@@ -1,6 +1,7 @@
 package don.savagescan.scan;
 
 import com.github.jgonian.ipmath.Ipv4;
+import don.savagescan.connector.FTP;
 import don.savagescan.connector.SSH;
 import don.savagescan.entity.CurrentServer;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,16 @@ public class ScanConsumer implements Runnable {
 
     @Override
     public void run() {
+        FTP ftp = applicationContext.getBean(FTP.class);
         SSH ssh = applicationContext.getBean(SSH.class);
+
 
         while (scanConfig.getCurrent() < Ipv4.LAST_IPV4_ADDRESS.asBigInteger().longValue()) {
             try {
                 String ip = queue.take();
+
+                ftp.setHost(ip);
+                ftp.tryConnections();
 
                 ssh.setHost(ip);
                 ssh.tryConnections();

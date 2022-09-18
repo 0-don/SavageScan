@@ -39,14 +39,12 @@ public class SavageScanApplication implements CommandLineRunner {
             HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create("https://api.ipify.org/?format=text")).build();
             var response = HttpClient.newBuilder().build().send(request, BodyHandlers.ofString());
             System.out.println(response.body());
-
-
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
 
 
-        if (!environment.equals("production")) {
+        if (environment.equals("production")) {
             savageScan.start();
         } else {
             scanCheck.check();

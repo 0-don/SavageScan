@@ -43,7 +43,6 @@ public class SSH {
             connect();
 
             if (!validSession || validSsh) {
-//////                save();
                 if (validSsh) save();
                 break;
             }
@@ -98,8 +97,6 @@ public class SSH {
                 scanConfig.getServerRepository().save(checkServer);
             }
         }
-
-
     }
 
     @Override
