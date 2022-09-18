@@ -38,7 +38,6 @@ public class FTP {
 
             connect();
 
-            System.out.println(this);
             if (!validSession || validFtp) {
                 if (validFtp) save();
                 break;

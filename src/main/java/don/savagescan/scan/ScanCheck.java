@@ -27,7 +27,6 @@ public class ScanCheck {
 
             if (serverService != null) {
                 ssh.setHost(server.getHost());
-                ssh.setUsername(serverService.getUsername());
                 ssh.setPassword(serverService.getPassword());
 
                 ssh.connect();
@@ -36,7 +35,6 @@ public class ScanCheck {
                     serverRepository.deleteById(server.getId());
                 }
 
-                System.out.println(ssh);
             } else {
                 serverRepository.deleteById(server.getId());
             }

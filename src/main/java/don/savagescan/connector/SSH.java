@@ -22,7 +22,7 @@ import java.io.IOException;
 public class SSH {
     private final int port = 22;
     private final ScanConfig scanConfig;
-    private String username = "root";
+    private final String username = "root";
     private String message;
     private String host;
     private String password;
@@ -52,7 +52,7 @@ public class SSH {
     public void connect() {
 
         try (final SSHClient ssh = new SSHClient()) {
-            System.out.println(this);
+
             ssh.addHostKeyVerifier(new PromiscuousVerifier());
             ssh.setTimeout(10000);
             ssh.setConnectTimeout(10000);
