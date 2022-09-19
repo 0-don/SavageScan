@@ -2,6 +2,7 @@ package don.savagescan;
 
 import don.savagescan.scan.SavageScan;
 import don.savagescan.scan.ScanCheck;
+import don.savagescan.utils.Nmap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -22,7 +23,7 @@ public class SavageScanApplication implements CommandLineRunner {
     private final SavageScan savageScan;
 
     private final ScanCheck scanCheck;
-
+    private final Nmap nmap;
 
     @Value("${environment}")
     private String environment;
@@ -41,7 +42,7 @@ public class SavageScanApplication implements CommandLineRunner {
             throw new RuntimeException(e);
         }
 
-
+//        nmap.scan();
         if (environment.equals("production")) {
             savageScan.start();
         } else {

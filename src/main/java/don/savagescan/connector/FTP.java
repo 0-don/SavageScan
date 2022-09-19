@@ -29,6 +29,12 @@ public class FTP {
     private boolean validSession = false;
     private boolean validFtp = false;
 
+    public void setHost(String host) {
+        this.host = host;
+        this.validSession = false;
+        this.validFtp = false;
+    }
+
     public void tryConnections() {
         for (String access : scanConfig.getFtpAccesses()) {
 
