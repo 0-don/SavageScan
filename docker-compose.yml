@@ -6,8 +6,6 @@ services:
     image: postgres:14.4-alpine
     network_mode: bridge
     restart: always
-    expose:
-      - "${SPRING_DATASOURCE_PORT}"
     ports:
       - ${SPRING_DATASOURCE_PORT}:${SPRING_DATASOURCE_PORT}
     environment:
