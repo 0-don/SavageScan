@@ -6,8 +6,6 @@ services:
     image: postgres:14.4-alpine
     network_mode: bridge
     restart: always
-    ports:
-      - ${SPRING_DATASOURCE_PORT}:${SPRING_DATASOURCE_PORT}
     environment:
       - POSTGRES_DB=${SPRING_DATASOURCE_DATABASE}
       - POSTGRES_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
