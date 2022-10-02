@@ -18,7 +18,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class SavageScan {
 
     private static final ExecutorService pool = Executors.newCachedThreadPool();
-    private final BlockingQueue<String> queue = new LinkedBlockingQueue<>(100_000);
+    private final BlockingQueue<String> queue = new LinkedBlockingQueue<>(50_000);
     private final ApplicationContext applicationContext;
     private final SettingsRepository settingsRepository;
     private final ScanConfig scanConfig;
