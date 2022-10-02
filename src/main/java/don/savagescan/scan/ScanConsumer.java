@@ -9,7 +9,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 
 @Component
@@ -48,7 +47,7 @@ public class ScanConsumer implements Runnable {
     }
 
     public void setCurrentIp(String ip) {
-        if (scanConfig.getCurrent() < Ipv4.of(ip).asBigInteger().longValue() && new Random().nextInt(100000) <= 2) {
+        if (scanConfig.getCurrent() < Ipv4.of(ip).asBigInteger().longValue()) {
             scanConfig.setCurrent(Ipv4.of(ip).asBigInteger().longValue());
             CurrentServer currentServer = scanConfig.getCurrentServerRepository().findFirstByOrderByIdDesc();
             currentServer.setHost(ip);
