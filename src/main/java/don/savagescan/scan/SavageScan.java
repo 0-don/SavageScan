@@ -1,6 +1,8 @@
 package don.savagescan.scan;
 
+import com.github.jgonian.ipmath.Ipv4;
 import don.savagescan.entity.Settings;
+import don.savagescan.repositories.CurrentServerRepository;
 import don.savagescan.repositories.SettingsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +23,8 @@ public class SavageScan {
     private final BlockingQueue<String> queue = new LinkedBlockingQueue<>(50_000);
     private final ApplicationContext applicationContext;
     private final SettingsRepository settingsRepository;
+
+    private final CurrentServerRepository currentServerRepository;
     private final ScanConfig scanConfig;
     @Value("${environment}")
     private String environment;
@@ -48,6 +52,11 @@ public class SavageScan {
 
         try {
             boolean terminated = pool.awaitTermination(99, java.util.concurrent.TimeUnit.DAYS);
+
+            var currentServer = currentServerRepository.findFirstByOrderByIdDesc();
+            currentServer.setHost(Ipv4.FIRST_IPV4_ADDRESS.toString());
+            currentServerRepository.save(currentServer);
+
             System.out.println("terminated: " + terminated);
         } catch (InterruptedException e) {
             System.out.println("InterruptedException: " + e.getMessage());

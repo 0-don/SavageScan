@@ -42,12 +42,12 @@ public class SavageScanApplication implements CommandLineRunner {
             throw new RuntimeException(e);
         }
 
-//        nmap.scan();
-        if (environment.equals("production")) {
-            savageScan.start();
-        } else {
-            scanCheck.check();
-        }
+        savageScan.start();
+//        if (environment.equals("production")) {
+//            savageScan.start();
+//        } else {
+//            scanCheck.check();
+//        }
 
     }
 
