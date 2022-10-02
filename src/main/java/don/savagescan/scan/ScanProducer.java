@@ -22,7 +22,7 @@ public class ScanProducer implements Runnable {
 
         do {
 
-            Ipv4 current = start.next();
+            Ipv4 current = start.hasNext() ? start.next() : Ipv4.LAST_IPV4_ADDRESS;
             for (Ipv4Range reservedIp : scanConfig.getIpv4ReservedIps()) {
                 if (reservedIp.contains(current)) {
                     current = reservedIp.end().hasNext() ? reservedIp.end().next() : Ipv4.LAST_IPV4_ADDRESS;
